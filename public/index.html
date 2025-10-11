@@ -588,246 +588,172 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 
 
 
-    // App Component
-    function App() {
+// App Component
+function App() {
+  // Use your deployed backend URL directly for browser
+  const API_URL = 'https://resalemanager.onrender.com';
 
-        // Define the backend URL at the top of App.js or in a .env file
-      const API_URL = 'https://resalemanager.onrender.com';
-      const [items, setItems] = React.useState([]);
-      const [loading, setLoading] = React.useState(true);
-      const [error, setError] = React.useState(null);
-      const [platformFilter, setPlatformFilter] = React.useState('All');
-      const [brandFilter, setBrandFilter] = React.useState('All');
-      const [sortBy, setSortBy] = React.useState('name-asc');
-      const [showModal, setShowModal] = React.useState(false);
-      const [editingItem, setEditingItem] = React.useState(null);
-      const brands = [...new Set(items.map(item => item.brand || 'Unknown'))];
+  const [items, setItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const [platformFilter, setPlatformFilter] = React.useState('All');
+  const [brandFilter, setBrandFilter] = React.useState('All');
+  const [sortBy, setSortBy] = React.useState('name-asc');
+  const [showModal, setShowModal] = React.useState(false);
+  const [editingItem, setEditingItem] = React.useState(null);
 
- const loadItems = async () => {
-  try {
-    console.log('Fetching items from backend');
-    const res = await fetch(`${API_URL}/api/items`, {
+  const brands = [...new Set(items.map(item => item.brand || 'Unknown'))];
+
+  // Load items from backend
+  const loadItems = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/items`, {
         headers: { 'Accept': 'application/json' }
-    });
-
-    console.log('GET response status:', res.status);
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Failed to fetch items: ${res.status} ${res.statusText}`);
-    }
-
-    const data = await res.json();
-    console.log('Fetched items:', data);
-
-    const validatedData = data.map(item => {
-      const salesHistory = Array.isArray(item.salesHistory) ? item.salesHistory : [];
-      const latestSaleDate = salesHistory.length > 0
-        ? salesHistory[salesHistory.length - 1].dateSold
-        : null;
-
-      return {
-        ...item,
-        origPrice: typeof item.origPrice === 'number' ? item.origPrice : 0,
-        salePrice: typeof item.salePrice === 'number' ? item.salePrice : 0,
-        totalProfit: typeof item.totalProfit === 'number' ? item.totalProfit : 0,
-        profitPerItem: typeof item.profitPerItem === 'number' ? item.profitPerItem : 0,
-        likes: typeof item.likes === 'number' ? item.likes : 0,
-        quantity: typeof item.quantity === 'number' ? item.quantity : 1,
-        sold: typeof item.sold === 'number' ? item.sold : 0,
-        salesHistory,
-        dateSold: latestSaleDate
-      };
-    });
-
-    setItems(validatedData);
-    setLoading(false);
-
-  } catch (err) {
-    console.error('Error fetching items:', err);
-    setError(err.message);
-    setLoading(false);
-  }
-};
-
-
-      const handleEdit = (item) => {
-        setEditingItem(item);
-        setShowModal(true);
-      };
-
- // DELETE item
-const handleDelete = async (item) => {
-  try {
-    console.log('Preparing DELETE request for item:', item.name);
-    console.log('Request URL:', `${API_URL}/api/items`);
-    const res = await fetch(`${API_URL}/api/items`, {
-      method: 'DELETE',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ name: item.name })
-    });
-
-    console.log('DELETE response status:', res.status);
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Failed to delete item: ${res.status} ${res.statusText} - ${text}`);
-    }
-
-    const data = await res.json();
-    console.log('DELETE response:', data);
-
-    // Update frontend state
-    setItems(items.filter(i => i.name !== item.name));
-
-  } catch (err) {
-    console.error('Error deleting item:', err);
-    alert(`Failed to delete item: ${err.message}`);
-  }
-};
-
-// SAVE or UPDATE item
-const handleSave = async (item) => {
-  try {
-    const method = editingItem ? 'PUT' : 'POST';
-    console.log('Saving item:', item);
-
-    const res = await fetch(`${API_URL}/api/items`, {
-      method,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(item)
-    });
-
-    console.log('Save response status:', res.status);
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Failed to save item: ${res.status} ${res.statusText} - ${text}`);
-    }
-
-    const savedItem = await res.json();
-    console.log('Saved item:', savedItem);
-
-    if (editingItem) {
-      setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
-    } else {
-      setItems([...items, savedItem]);
-    }
-
-    setShowModal(false);
-    setEditingItem(null);
-
-  } catch (err) {
-    console.error('Error saving item:', err);
-    alert(`Failed to save item: ${err.message}`);
-  }
-};
-
-      const handleCancel = () => {
-        setShowModal(false);
-        setEditingItem(null);
-      };
-
-      React.useEffect(() => {
-        loadItems();
-      }, []);
-
-      if (loading) {
-        return <div className="loading-message">Loading inventory...</div>;
-      }
-
-      if (error) {
-        return (
-          <div className="error-message">
-            <h2>Error: {error}</h2>
-            <p>Please ensure the backend is running at http://localhost:3000 and the /api/items endpoint is accessible.</p>
-          </div>
-        );
-      }
-
-      const filteredItems = items.filter(item => {
-        const matchesPlatform = platformFilter === 'All' || item.platform === platformFilter;
-        const matchesBrand = brandFilter === 'All' || item.brand === brandFilter;
-        return matchesPlatform && matchesBrand;
-      }).sort((a, b) => {
-        const [field, direction] = sortBy.split('-');
-        let valueA = field === 'name' ? a[field].toLowerCase() : field === 'profit' ? a['totalProfit'] : field === 'dateSold' ? (a[field] ? new Date(a[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : a[field];
-        let valueB = field === 'name' ? b[field].toLowerCase() : field === 'profit' ? b['totalProfit'] : field === 'dateSold' ? (b[field] ? new Date(b[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : b[field];
-        if (valueA < valueB) return direction === 'asc' ? -1 : 1;
-        if (valueA > valueB) return direction === 'asc' ? 1 : -1;
-        return 0;
       });
 
-      const totalProfit = filteredItems.reduce((sum, item) => sum + (typeof item.totalProfit === 'number' ? item.totalProfit : 0), 0);
+      if (!res.ok) throw new Error(`Failed to fetch items: ${res.status} ${res.statusText}`);
 
-      const profitByBrand = filteredItems.reduce((acc, item) => {
-        const brand = item.brand || 'Unknown';
-        acc[brand] = (acc[brand] || 0) + (typeof item.totalProfit === 'number' ? item.totalProfit : 0);
-        return acc;
-      }, {});
-      const brandChartData = Object.entries(profitByBrand).map(([brand, profit]) => ({
-        brand,
-        profit: Number(profit.toFixed(2))
-      }));
+      const data = await res.json();
 
-      const profitByPlatform = filteredItems.reduce((acc, item) => {
-        const platform = item.platform || 'Unknown';
-        acc[platform] = (acc[platform] || 0) + (typeof item.totalProfit === 'number' ? item.totalProfit : 0);
-        return acc;
-      }, {});
-      const platformChartData = Object.entries(profitByPlatform).map(([platform, profit]) => ({
-        platform,
-        profit: Number(profit.toFixed(2))
-      }));
+      const validatedData = data.map(item => {
+        const salesHistory = Array.isArray(item.salesHistory) ? item.salesHistory : [];
+        const latestSaleDate = salesHistory.length > 0
+          ? salesHistory[salesHistory.length - 1].dateSold
+          : null;
 
-      return (
-        <ErrorBoundary>
-          <div>
-            <h1>Clothing Inventory</h1>
-            <div className="total-profit">
-              Total Profit: ${totalProfit.toFixed(2)}
-            </div>
-            <ProfitChart
-              data={brandChartData}
-              title="Brand"
-              type="brand"
-              colors={{
-                background: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'],
-                border: ['#D9534F', '#3BB4AB', '#3A9BB6', '#7CB342', '#FFD54F']
-              }}
-            />
-            <ProfitChart
-              data={platformChartData}
-              title="Platform"
-              type="platform"
-              colors={{
-                background: ['#FF6B6B', '#4ECDC4', '#45B7D1'],
-                border: ['#D9534F', '#3BB4AB', '#3A9BB6']
-              }}
-            />
-            <FilterSortControls
-              platformFilter={platformFilter}
-              setPlatformFilter={setPlatformFilter}
-              brandFilter={brandFilter}
-              setBrandFilter={setBrandFilter}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              brands={brands}
-            />
-            <button type="button" className="add-button" onClick={() => setShowModal(true)}>
-              Add New Item
-            </button>
-            <ItemList items={filteredItems} onEdit={handleEdit} onDelete={handleDelete} />
-            {showModal && (
-              <ItemForm item={editingItem} onSave={handleSave} onCancel={handleCancel} />
-            )}
-          </div>
-        </ErrorBoundary>
-      );
+        return {
+          ...item,
+          origPrice: typeof item.origPrice === 'number' ? item.origPrice : 0,
+          salePrice: typeof item.salePrice === 'number' ? item.salePrice : 0,
+          profitPerItem: typeof item.profitPerItem === 'number' ? item.profitPerItem : 0,
+          totalProfit: typeof item.totalProfit === 'number' ? item.totalProfit : 0,
+          likes: typeof item.likes === 'number' ? item.likes : 0,
+          quantity: typeof item.quantity === 'number' ? item.quantity : 1,
+          sold: typeof item.sold === 'number' ? item.sold : 0,
+          salesHistory,
+          dateSold: latestSaleDate
+        };
+      });
+
+      setItems(validatedData);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching items:', err);
+      setError(err.message);
+      setLoading(false);
     }
+  };
+
+  // Edit an item
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setShowModal(true);
+  };
+
+  // Delete an item
+  const handleDelete = async (item) => {
+    try {
+      const res = await fetch(`${API_URL}/api/items`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name: item.name })
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Failed to delete item: ${res.status} ${res.statusText} - ${text}`);
+      }
+
+      await res.json();
+      setItems(items.filter(i => i.name !== item.name));
+    } catch (err) {
+      console.error('Error deleting item:', err);
+      alert(`Failed to delete item: ${err.message}`);
+    }
+  };
+
+  // Save or update an item
+  const handleSave = async (item) => {
+    try {
+      const method = editingItem ? 'PUT' : 'POST';
+      const res = await fetch(`${API_URL}/api/items`, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(item)
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Failed to save item: ${res.status} ${res.statusText} - ${text}`);
+      }
+
+      const savedItem = await res.json();
+      if (editingItem) {
+        setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
+      } else {
+        setItems([...items, savedItem]);
+      }
+
+      setShowModal(false);
+      setEditingItem(null);
+    } catch (err) {
+      console.error('Error saving item:', err);
+      alert(`Failed to save item: ${err.message}`);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setEditingItem(null);
+  };
+
+  React.useEffect(() => {
+    loadItems();
+  }, []);
+
+  if (loading) return <div className="loading-message">Loading inventory...</div>;
+  if (error) return <div className="error-message"><h2>Error: {error}</h2></div>;
+
+  // Filter and sort items
+  const filteredItems = items.filter(item => {
+    const matchesPlatform = platformFilter === 'All' || item.platform === platformFilter;
+    const matchesBrand = brandFilter === 'All' || item.brand === brandFilter;
+    return matchesPlatform && matchesBrand;
+  }).sort((a, b) => {
+    const [field, direction] = sortBy.split('-');
+    let valueA = field === 'name' ? a[field].toLowerCase() : field === 'profit' ? a['totalProfit'] : field === 'dateSold' ? (a[field] ? new Date(a[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : a[field];
+    let valueB = field === 'name' ? b[field].toLowerCase() : field === 'profit' ? b['totalProfit'] : field === 'dateSold' ? (b[field] ? new Date(b[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : b[field];
+    if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+    if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const totalProfit = filteredItems.reduce((sum, item) => sum + (typeof item.totalProfit === 'number' ? item.totalProfit : 0), 0);
+
+  return (
+    <ErrorBoundary>
+      <div>
+        <h1>Clothing Inventory</h1>
+        <div className="total-profit">Total Profit: ${totalProfit.toFixed(2)}</div>
+        <FilterSortControls
+          platformFilter={platformFilter}
+          setPlatformFilter={setPlatformFilter}
+          brandFilter={brandFilter}
+          setBrandFilter={setBrandFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          brands={brands}
+        />
+        <button type="button" className="add-button" onClick={() => setShowModal(true)}>Add New Item</button>
+        <ItemList items={filteredItems} onEdit={handleEdit} onDelete={handleDelete} />
+        {showModal && (
+          <ItemForm item={editingItem} onSave={handleSave} onCancel={handleCancel} />
+        )}
+      </div>
+    </ErrorBoundary>
+  );
+}
+
 
     // Render App
     console.log('Checking for required libraries...');
