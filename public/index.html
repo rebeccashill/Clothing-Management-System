@@ -590,6 +590,9 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 
     // App Component
     function App() {
+
+        // Define the backend URL at the top of App.js or in a .env file
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
       const [items, setItems] = React.useState([]);
       const [loading, setLoading] = React.useState(true);
       const [error, setError] = React.useState(null);
@@ -652,91 +655,76 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
         setShowModal(true);
       };
 
-      const handleDelete = async (item) => {
-        try {
-          console.log('Preparing DELETE request for item:', item.name);
-          console.log('Request URL: http://localhost:3000/api/items');
-          console.log('Request body:', JSON.stringify({ name: item.name }));
-          const res = await originalFetch('http://localhost:3000/api/items', {
-            method: 'DELETE',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ name: item.name })
-          });
-          console.log('DELETE response status:', res.status);
-          console.log('DELETE response headers:', Object.fromEntries(res.headers.entries()));
-          if (!res.ok) {
-            const text = await res.text();
-            console.error('DELETE failed, status:', res.status, 'Response:', text);
-            throw new Error(`Failed to delete item: ${res.status} ${res.statusText}`);
-          }
-          const contentType = res.headers.get('content-type');
-          const xContentTypeOptions = res.headers.get('x-content-type-options');
-          if (!xContentTypeOptions || xContentTypeOptions !== 'nosniff') {
-            console.warn('Warning: X-Content-Type-Options header missing or incorrect:', xContentTypeOptions || 'not set');
-          }
-          if (!contentType || !contentType.includes('application/json')) {
-            const text = await res.text();
-            console.error('Unexpected content type:', contentType, 'Response:', text);
-            throw new Error('Server did not return JSON');
-          }
-          const data = await res.json();
-          console.log('DELETE response:', data);
-          setItems(items.filter(i => i.name !== item.name));
-        } catch (err) {
-          console.error('Error deleting item:', err);
-          alert(`Failed to delete item: ${err.message}`);
-        }
-      };
+ // DELETE item
+const handleDelete = async (item) => {
+  try {
+    console.log('Preparing DELETE request for item:', item.name);
+    console.log('Request URL:', `${API_URL}/api/items`);
+    const res = await fetch(`${API_URL}/api/items`, {
+      method: 'DELETE',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ name: item.name })
+    });
 
-      const handleSave = async (item) => {
-        try {
-          const method = editingItem ? 'PUT' : 'POST';
-          console.log('Saving item:', item);
-          console.log('Request URL: http://localhost:3000/api/items');
-          console.log('Request method:', method);
-          console.log('Request body:', JSON.stringify(item));
-          const res = await originalFetch('http://localhost:3000/api/items', {
-            method,
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(item)
-          });
-          console.log('Save response status:', res.status);
-          console.log('Save response headers:', Object.fromEntries(res.headers.entries()));
-          if (!res.ok) {
-            const text = await res.text();
-            console.error('Save item failed, status:', res.status, 'Response:', text);
-            throw new Error(`Failed to save item: ${res.status} ${res.statusText}`);
-          }
-          const contentType = res.headers.get('content-type');
-          const xContentTypeOptions = res.headers.get('x-content-type-options');
-          if (!xContentTypeOptions || xContentTypeOptions !== 'nosniff') {
-            console.warn('Warning: X-Content-Type-Options header missing or incorrect:', xContentTypeOptions || 'not set');
-          }
-          if (!contentType || !contentType.includes('application/json')) {
-            const text = await res.text();
-            console.error('Unexpected content type:', contentType, 'Response:', text);
-            throw new Error('Server did not return JSON');
-          }
-          const savedItem = await res.json();
-          console.log('Saved item:', savedItem);
-          if (editingItem) {
-            setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
-          } else {
-            setItems([...items, savedItem]);
-          }
-          setShowModal(false);
-          setEditingItem(null);
-        } catch (err) {
-          console.error('Error saving item:', err);
-          alert(`Failed to save item: ${err.message}`);
-        }
-      };
+    console.log('DELETE response status:', res.status);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to delete item: ${res.status} ${res.statusText} - ${text}`);
+    }
+
+    const data = await res.json();
+    console.log('DELETE response:', data);
+
+    // Update frontend state
+    setItems(items.filter(i => i.name !== item.name));
+
+  } catch (err) {
+    console.error('Error deleting item:', err);
+    alert(`Failed to delete item: ${err.message}`);
+  }
+};
+
+// SAVE or UPDATE item
+const handleSave = async (item) => {
+  try {
+    const method = editingItem ? 'PUT' : 'POST';
+    console.log('Saving item:', item);
+
+    const res = await fetch(`${API_URL}/api/items`, {
+      method,
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(item)
+    });
+
+    console.log('Save response status:', res.status);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to save item: ${res.status} ${res.statusText} - ${text}`);
+    }
+
+    const savedItem = await res.json();
+    console.log('Saved item:', savedItem);
+
+    if (editingItem) {
+      setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
+    } else {
+      setItems([...items, savedItem]);
+    }
+
+    setShowModal(false);
+    setEditingItem(null);
+
+  } catch (err) {
+    console.error('Error saving item:', err);
+    alert(`Failed to save item: ${err.message}`);
+  }
+};
 
       const handleCancel = () => {
         setShowModal(false);
