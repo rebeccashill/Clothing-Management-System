@@ -606,8 +606,8 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
  const loadItems = async () => {
   try {
     console.log('Fetching items from backend');
-    const res = await fetch('https://resalemanager.onrender.com', {
-      headers: { 'Accept': 'application/json' }
+    const res = await fetch(`${API_URL}/api/items`, {
+        headers: { 'Accept': 'application/json' }
     });
 
     console.log('GET response status:', res.status);
