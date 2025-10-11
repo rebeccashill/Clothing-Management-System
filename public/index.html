@@ -600,61 +600,52 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
       const [editingItem, setEditingItem] = React.useState(null);
       const brands = [...new Set(items.map(item => item.brand || 'Unknown'))];
 
-      const loadItems = async () => {
-        try {
-          console.log('Fetching items from /api/items');
-          const res = await originalFetch('http://localhost:3000/api/items', {
-            headers: { 'Accept': 'application/json' }
-          });
-          console.log('GET response status:', res.status);
-          console.log('GET response headers:', Object.fromEntries(res.headers.entries()));
-          if (!res.ok) {
-            const text = await res.text();
-            console.error('Fetch items failed, status:', res.status, 'Response:', text);
-            throw new Error(`Failed to fetch items: ${res.status} ${res.statusText}`);
-          }
-          const contentType = res.headers.get('content-type');
-          const xContentTypeOptions = res.headers.get('x-content-type-options');
-          if (!xContentTypeOptions || xContentTypeOptions !== 'nosniff') {
-            console.warn('Warning: X-Content-Type-Options header missing or incorrect:', xContentTypeOptions || 'not set');
-          }
-          if (!contentType || !contentType.includes('application/json')) {
-            const text = await res.text();
-            console.error('Unexpected content type:', contentType, 'Response:', text);
-            throw new Error('Server did not return JSON');
-          }
-          const data = await res.json();
-          console.log('Fetched items:', data);
-          // Validate data
-        const validatedData = data.map(item => {
-        const salesHistory = Array.isArray(item.salesHistory) ? item.salesHistory : [];
+ const loadItems = async () => {
+  try {
+    console.log('Fetching items from backend');
+    const res = await fetch('https://resalemanager.onrender.com', {
+      headers: { 'Accept': 'application/json' }
+    });
 
-        // Get latest sale date
-        const latestSaleDate = salesHistory.length > 0
-            ? salesHistory[salesHistory.length - 1].dateSold
+    console.log('GET response status:', res.status);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to fetch items: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    console.log('Fetched items:', data);
+
+    const validatedData = data.map(item => {
+      const salesHistory = Array.isArray(item.salesHistory) ? item.salesHistory : [];
+      const latestSaleDate = salesHistory.length > 0
+        ? salesHistory[salesHistory.length - 1].dateSold
         : null;
 
-        return {
-            ...item,
-            origPrice: typeof item.origPrice === 'number' ? item.origPrice : 0,
-            salePrice: typeof item.salePrice === 'number' ? item.salePrice : 0,
-            totalProfit: typeof item.totalProfit === 'number' ? item.totalProfit : 0,
-            profitPerItem: typeof item.profitPerItem === 'number' ? item.profitPerItem : 0,
-            likes: typeof item.likes === 'number' ? item.likes : 0,
-            quantity: typeof item.quantity === 'number' ? item.quantity : 1,
-            sold: typeof item.sold === 'number' ? item.sold : 0,
-            salesHistory,
-            dateSold: latestSaleDate // <-- add this
-        };
-        });
-          setItems(validatedData);
-          setLoading(false);
-        } catch (err) {
-          console.error('Error fetching items:', err);
-          setError(err.message);
-          setLoading(false);
-        }
+      return {
+        ...item,
+        origPrice: typeof item.origPrice === 'number' ? item.origPrice : 0,
+        salePrice: typeof item.salePrice === 'number' ? item.salePrice : 0,
+        totalProfit: typeof item.totalProfit === 'number' ? item.totalProfit : 0,
+        profitPerItem: typeof item.profitPerItem === 'number' ? item.profitPerItem : 0,
+        likes: typeof item.likes === 'number' ? item.likes : 0,
+        quantity: typeof item.quantity === 'number' ? item.quantity : 1,
+        sold: typeof item.sold === 'number' ? item.sold : 0,
+        salesHistory,
+        dateSold: latestSaleDate
       };
+    });
+
+    setItems(validatedData);
+    setLoading(false);
+
+  } catch (err) {
+    console.error('Error fetching items:', err);
+    setError(err.message);
+    setLoading(false);
+  }
+};
+
 
       const handleEdit = (item) => {
         setEditingItem(item);
