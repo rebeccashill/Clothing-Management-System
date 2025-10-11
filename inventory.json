@@ -1,0 +1,554 @@
+[
+  {
+    "name": "Denim Micro Mini Skirt",
+    "type": "Skirt",
+    "brand": "Aeropostale",
+    "likes": 2,
+    "origPrice": 25.04,
+    "salePrice": 42,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 16.96,
+    "totalProfit": 16.96,
+    "boosted": false,
+    "platform": "Depop",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 16.96
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Boston Sweatshirt",
+    "type": "Sweatshirt",
+    "brand": "Gildan",
+    "likes": 1,
+    "origPrice": 0,
+    "salePrice": 26,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 26,
+    "totalProfit": 26,
+    "boosted": true,
+    "platform": "Depop",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 26
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Trapeze Lace Slip Dress",
+    "type": "Dress",
+    "brand": "Free People",
+    "likes": 2,
+    "origPrice": 0,
+    "salePrice": 25.5,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 25.5,
+    "totalProfit": 25.5,
+    "boosted": true,
+    "platform": "Depop",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 25.5
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Plaid Mini Skirt",
+    "type": "Skirt",
+    "brand": "Shein",
+    "likes": 137,
+    "origPrice": 8.38,
+    "salePrice": 20,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 11.62,
+    "totalProfit": 11.62,
+    "boosted": true,
+    "platform": "Depop",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 11.62
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Tommy Hilfiger Tote Bag",
+    "type": "Bag",
+    "brand": "Tommy Hilfiger",
+    "likes": 3,
+    "origPrice": 35.18,
+    "salePrice": 65,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 29.82,
+    "totalProfit": 29.82,
+    "boosted": true,
+    "platform": "Depop",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 29.82
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Pink Lacy Nightgown",
+    "type": "Dress",
+    "brand": "Shadowline",
+    "likes": 7,
+    "origPrice": 26.27,
+    "salePrice": 46,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 19.73,
+    "totalProfit": 19.73,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 19.73
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Streetwear Black Crossbody Sling Bag",
+    "type": "Bag",
+    "brand": "",
+    "likes": 2,
+    "origPrice": 0,
+    "salePrice": 12,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 12,
+    "totalProfit": 12,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 12
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Black Cargo Pants",
+    "type": "Pants",
+    "brand": "Dollskill",
+    "likes": 17,
+    "origPrice": 73.3,
+    "salePrice": 110,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 36.7,
+    "totalProfit": 36.7,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 36.7
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Blush Pink Babydoll Dress",
+    "type": "Dress",
+    "brand": "Free People",
+    "likes": 2,
+    "origPrice": 0,
+    "salePrice": 72,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 72,
+    "totalProfit": 72,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 72
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Vintage Red Lacey Mesh Camisole",
+    "type": "Camisole",
+    "brand": "Made in Italy",
+    "likes": 208,
+    "origPrice": 64.13,
+    "salePrice": 0,
+    "quantity": 1,
+    "sold": 0,
+    "profitPerItem": 0,
+    "totalProfit": 0,
+    "boosted": false,
+    "platform": "Depop",
+    "salesHistory": [],
+    "dateSold": null
+  },
+  {
+    "name": "Pleated Micro Mini Skirt",
+    "type": "Skirt",
+    "brand": "Aeropostale",
+    "likes": 3,
+    "origPrice": 45.95,
+    "salePrice": 0,
+    "quantity": 1,
+    "sold": 0,
+    "profitPerItem": 0,
+    "totalProfit": 0,
+    "boosted": false,
+    "platform": "Depop",
+    "salesHistory": [],
+    "dateSold": null
+  },
+  {
+    "name": "Purple Plaid Pleated Micro Mini Skirt",
+    "type": "Skirt",
+    "brand": "Charlotte Russe",
+    "likes": 0,
+    "origPrice": 42.5,
+    "salePrice": 85,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 42.5,
+    "totalProfit": 42.5,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 42.5
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Long Sleeve Black Henley",
+    "type": "Shirt",
+    "brand": "Harley Davidson",
+    "likes": 5,
+    "origPrice": 33,
+    "salePrice": 45,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 12,
+    "totalProfit": 12,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 12
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Office Siren Gray Women's Ruffle Skort",
+    "type": "Skirt",
+    "brand": "Shein",
+    "likes": 4,
+    "origPrice": 10.48,
+    "salePrice": 12,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 1.52,
+    "totalProfit": 1.52,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 1.52
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Vintage Striped Henley Tee",
+    "type": "T-Shirt",
+    "brand": "Abercrombie & Fitch",
+    "likes": 5,
+    "origPrice": 43,
+    "salePrice": 60,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 17,
+    "totalProfit": 17,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 17
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Black Girls Rule Tote",
+    "type": "Bag",
+    "brand": "Harley Davidson",
+    "likes": 1,
+    "origPrice": 51.17,
+    "salePrice": 75,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 23.83,
+    "totalProfit": 23.83,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 23.83
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Vintage Pink Floral Camisole",
+    "type": "Camisole",
+    "brand": "",
+    "likes": 11,
+    "origPrice": 36.3,
+    "salePrice": 59,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 22.7,
+    "totalProfit": 22.7,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 22.7
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Striped Off-shoulder Top",
+    "type": "Shirt",
+    "brand": "Zara",
+    "likes": 2,
+    "origPrice": 0,
+    "salePrice": 10,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 10,
+    "totalProfit": 10,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 10
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Embroidered Dark Blue Denim Skirt",
+    "type": "Skirt",
+    "brand": "West 36th St",
+    "likes": 8,
+    "origPrice": 25,
+    "salePrice": 40,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 15,
+    "totalProfit": 15,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 15
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Balletcore Floral Blue Satin Miniskirt",
+    "type": "Skirt",
+    "brand": "Urban Outfitters",
+    "likes": 3,
+    "origPrice": 14.99,
+    "salePrice": 25,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 10.01,
+    "totalProfit": 10.01,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 10.01
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Pointelle Baby Blue Knit Mini Skirt",
+    "type": "Skirt",
+    "brand": "Urban Outfitters",
+    "likes": 2,
+    "origPrice": 35,
+    "salePrice": 20,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": -15,
+    "totalProfit": -15,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": -15
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Red Floral Shirred Top",
+    "type": "Camisole",
+    "brand": "Brandy Melville",
+    "likes": 1,
+    "origPrice": 0,
+    "salePrice": 25,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 25,
+    "totalProfit": 25,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 25
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "White Floral Cropped Puffer Jacket",
+    "type": "Jacket",
+    "brand": "Shein",
+    "likes": 2,
+    "origPrice": 14.96,
+    "salePrice": 34,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 19.04,
+    "totalProfit": 19.04,
+    "boosted": false,
+    "platform": "Poshmark",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 19.04
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Boho White Cami",
+    "type": "Camisole",
+    "brand": "Shein",
+    "likes": 1,
+    "origPrice": 5,
+    "salePrice": 20,
+    "quantity": 1,
+    "sold": 0,
+    "profitPerItem": 15,
+    "totalProfit": 0,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [],
+    "dateSold": null
+  },
+  {
+    "name": "Dark Wash Denim Mini Skirt",
+    "type": "Skirt",
+    "brand": "West 36th St",
+    "likes": 10,
+    "origPrice": 25,
+    "salePrice": 45,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 20,
+    "totalProfit": 20,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 20
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Burgundy Henley Tee",
+    "type": "Shirt",
+    "brand": "Abercrombie & Fitch",
+    "likes": 15,
+    "origPrice": 22.6,
+    "salePrice": 58.5,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 35.9,
+    "totalProfit": 35.9,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 35.9
+      }
+    ],
+    "dateSold": "2025-10-05"
+  },
+  {
+    "name": "Delicate Pink Cami",
+    "type": "Camisole",
+    "brand": "Dior",
+    "likes": 0,
+    "origPrice": 133.27,
+    "salePrice": 280,
+    "quantity": 1,
+    "sold": 1,
+    "profitPerItem": 146.73,
+    "totalProfit": 146.73,
+    "boosted": false,
+    "platform": "Other",
+    "salesHistory": [
+      {
+        "date": "2025-10-05",
+        "totalProfit": 216.73
+      }
+    ],
+    "dateSold": "2025-10-05"
+  }
+]

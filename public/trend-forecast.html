@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trend Forecast</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; }
+  canvas { max-width: 100%; }
+  .chart-container { margin-bottom: 50px; }
+</style>
+</head>
+<body>
+<h1>Clothing Profit Trend Forecast</h1>
+
+<div class="chart-container">
+  <h2>Total Forecast</h2>
+  <canvas id="totalForecastChart"></canvas>
+</div>
+
+<div class="chart-container">
+  <h2>Forecast by Brand</h2>
+  <div id="brandCharts"></div>
+</div>
+
+<div class="chart-container">
+  <h2>Forecast by Platform</h2>
+  <div id="platformCharts"></div>
+</div>
+
+<!-- Chart.js UMD -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+<script>
+(async function() {
+  if (typeof Chart === 'undefined') {
+    alert('Chart.js did not load. Open via http://localhost:3000/public/trend-forecast.html');
+    return;
+  }
+
+  async function fetchForecast() {
+    const res = await fetch('/api/trend-forecast');
+    if (!res.ok) throw new Error('Failed to fetch forecast');
+    return res.json();
+  }
+
+  function renderLineChart(canvas, labels, data, label) {
+    return new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label,
+          data,
+          borderColor:'rgba(75,192,192,1)',
+          backgroundColor:'rgba(75,192,192,0.2)',
+          tension:0.3
+        }]
+      },
+      options: {
+        responsive:true,
+        plugins:{ legend:{display:true}, tooltip:{mode:'index', intersect:false} },
+        scales:{ x:{ title:{display:true, text:'Day Index'}}, y:{ title:{display:true, text:'Predicted Profit ($)'}} }
+      }
+    });
+  }
+
+  function renderForecastCharts(containerId, forecastData, typeLabel) {
+    const container = document.getElementById(containerId);
+    forecastData.forEach(item => {
+      const div = document.createElement('div');
+      div.className='chart-container';
+      const canvas = document.createElement('canvas');
+      div.appendChild(canvas);
+      container.appendChild(div);
+
+      const labels = item.forecast.map(p => p.dayIndex);
+      const data = item.forecast.map(p => p.predictedProfit);
+      renderLineChart(canvas, labels, data, `${typeLabel}: ${item.brand || item.platform}`);
+    });
+  }
+
+  try {
+    const forecast = await fetchForecast();
+
+    renderLineChart(
+      document.getElementById('totalForecastChart'),
+      forecast.totalForecast.map(p=>p.dayIndex),
+      forecast.totalForecast.map(p=>p.predictedProfit),
+      'Total Forecast'
+    );
+
+    renderForecastCharts('brandCharts', forecast.forecastByBrand, 'Brand');
+    renderForecastCharts('platformCharts', forecast.forecastByPlatform, 'Platform');
+  } catch(err) {
+    console.error(err);
+    alert('Failed to load forecast data.');
+  }
+})();
+</script>
+</body>
+</html>
