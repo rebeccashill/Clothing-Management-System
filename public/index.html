@@ -592,7 +592,7 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
     function App() {
 
         // Define the backend URL at the top of App.js or in a .env file
-        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+      const API_URL = 'https://resalemanager.onrender.com';
       const [items, setItems] = React.useState([]);
       const [loading, setLoading] = React.useState(true);
       const [error, setError] = React.useState(null);
