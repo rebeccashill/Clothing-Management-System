@@ -737,9 +737,27 @@ function App() {
     const matchesBrand = brandFilter === 'All' || item.brand === brandFilter;
     return matchesPlatform && matchesBrand;
   }).sort((a, b) => {
-    const [field, direction] = sortBy.split('-');
-    let valueA = field === 'name' ? a[field].toLowerCase() : field === 'profit' ? a['totalProfit'] : field === 'dateSold' ? (a[field] ? new Date(a[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : a[field];
-    let valueB = field === 'name' ? b[field].toLowerCase() : field === 'profit' ? b['totalProfit'] : field === 'dateSold' ? (b[field] ? new Date(b[field]).getTime() : (direction === 'asc' ? Infinity : -Infinity)) : b[field];
+  const [field, direction] = sortBy.split('-');
+  let valueA, valueB;
+  if (field === 'name') {
+    valueA = a.name.toLowerCase();
+    valueB = b.name.toLowerCase();
+  } else if (field === 'profit') {
+    valueA = a.totalProfit;
+    valueB = b.totalProfit;
+  } else if (field === 'dateSold') {
+    const dateA = getLatestSaleDate(a);
+    const dateB = getLatestSaleDate(b);
+    valueA = dateA ? dateA.getTime() : (direction === 'asc' ? Infinity : -Infinity);
+    valueB = dateB ? dateB.getTime() : (direction === 'asc' ? Infinity : -Infinity);
+  } else {
+    valueA = a[field];
+    valueB = b[field];
+  }
+
+  if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+  if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+  return 0;
     if (valueA < valueB) return direction === 'asc' ? -1 : 1;
     if (valueA > valueB) return direction === 'asc' ? 1 : -1;
     return 0;
