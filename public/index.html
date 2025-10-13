@@ -316,7 +316,10 @@
             </p>
             
             {/* Display latest sale date */}
-            <p>Date Sold: {latestSaleDate || '—'}</p>
+            {/*<p>Date Sold: {latestSaleDate || '—'}</p>*/}
+            <p>Date Sold:{' '} {latestSaleDate ? new Date(latestSaleDate).toLocaleDateString(): 'Not sold yet'}
+            </p>
+
 
             {/* Optional: display all sale dates
             {item.salesHistory && item.salesHistory.length > 0 && (
@@ -718,6 +721,12 @@ function App() {
   React.useEffect(() => {
     loadItems();
   }, []);
+
+  React.useEffect(() => {
+  if (showModal) document.body.classList.add('modal-open');
+  else document.body.classList.remove('modal-open');
+}, [showModal]);
+
 
   if (loading) return <div className="loading-message">Loading inventory...</div>;
   if (error) return <div className="error-message"><h2>Error: {error}</h2></div>;
