@@ -167,7 +167,11 @@
       border-radius: 0.5rem;
       width: 100%;
       max-width: 500px;
+      max-height: 80vh; /* Limit height to 80% of viewport */
+      overflow-y: auto; /* Enable vertical scroll */
+      box-sizing: border-box;
     }
+
     .modal-content h2 {
       font-size: 1.25rem;
       font-weight: bold;
@@ -210,6 +214,10 @@
     .modal-content .cancel-button:hover {
       background-color: #4b5563;
     }
+    body.modal-open {
+      overflow: hidden;
+    }
+
   </style>
 </head>
 <body>
