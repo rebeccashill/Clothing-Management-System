@@ -602,7 +602,7 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 // App Component
 function App() {
   // ✅ Use environment variable for Netlify, fallback to Render URL
-  const API_URL = import.meta.env.VITE_API_URL || 'https://resalemanager.onrender.com';
+  const API_URL = 'https://resalemanager.onrender.com';
 
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
