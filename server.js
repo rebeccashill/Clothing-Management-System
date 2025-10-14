@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://friendly-pasca-4754e6.netlify.app', // ✅ your Netlify URL
+  'http://resalemanager.netlify.app', // ✅ your Netlify URL
 ];
 
 // ✅ Middleware
