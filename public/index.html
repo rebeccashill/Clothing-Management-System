@@ -597,148 +597,95 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
   );
 }
 
+  const { useState, useEffect } = React;
 
+    const API_URL = 'https://resalemanager.onrender.com';
 
-// App Component
-function App() {
-  // ✅ Use environment variable for Netlify, fallback to Render URL
-  const API_URL = 'https://resalemanager.onrender.com';
+    function App() {
+      const [items, setItems] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      const [showModal, setShowModal] = useState(false);
+      const [editingItem, setEditingItem] = useState(null);
 
-  const [items, setItems] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [platformFilter, setPlatformFilter] = React.useState('All');
-  const [brandFilter, setBrandFilter] = React.useState('All');
-  const [sortBy, setSortBy] = React.useState('name-asc');
-  const [showModal, setShowModal] = React.useState(false);
-  const [editingItem, setEditingItem] = React.useState(null);
+      // Load items
+      const loadItems = async () => {
+        try {
+          const res = await fetch(API_URL + '/api/items', { headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+          const data = await res.json();
+          setItems(data.map(item => ({
+            ...item,
+            totalProfit: Number(item.totalProfit) || 0,
+            dateSold: item.salesHistory?.length > 0
+              ? item.salesHistory[item.salesHistory.length - 1].dateSold
+              : null
+          })));
+          setLoading(false);
+        } catch (err) {
+          console.error(err);
+          setError(err.message);
+          setLoading(false);
+        }
+      };
 
-  const brands = [...new Set(items.map(item => item.brand || 'Unknown'))];
+      // Save or update item
+      const handleSave = async (item) => {
+        try {
+          const method = editingItem ? 'PUT' : 'POST';
+          const id = editingItem?._id || editingItem?.name;
+          const url = editingItem ? `${API_URL}/api/items/${encodeURIComponent(id)}` : `${API_URL}/api/items`;
+          const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(item)
+          });
+          if (!res.ok) throw new Error(`Failed to save: ${res.status} ${res.statusText}`);
+          const saved = await res.json();
+          if (editingItem) {
+            setItems(items.map(i => (i._id === editingItem._id ? saved : i)));
+          } else {
+            setItems([...items, saved]);
+          }
+          setEditingItem(null);
+          setShowModal(false);
+        } catch (err) {
+          console.error(err);
+          alert(err.message);
+        }
+      };
 
-  // ✅ Load items from backend
-  const loadItems = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/items`, {
-        headers: { 'Accept': 'application/json' }
-      });
+      // Delete item
+      const handleDelete = async (item) => {
+        try {
+          const id = item._id || item.name;
+          const res = await fetch(`${API_URL}/api/items/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(`Failed to delete: ${res.status} ${res.statusText}`);
+          setItems(items.filter(i => (i._id || i.name) !== id));
+        } catch (err) {
+          console.error(err);
+          alert(err.message);
+        }
+      };
 
-      if (!res.ok) throw new Error(`Failed to fetch items: ${res.status} ${res.statusText}`);
+      const handleEdit = (item) => {
+        setEditingItem(item);
+        setShowModal(true);
+      };
 
-      const data = await res.json();
+      const handleCancel = () => {
+        setEditingItem(null);
+        setShowModal(false);
+      };
 
-      const validatedData = data.map(item => {
-        const salesHistory = Array.isArray(item.salesHistory) ? item.salesHistory : [];
-        const latestSaleDate = salesHistory.length > 0
-          ? salesHistory[salesHistory.length - 1].dateSold
-          : null;
+      useEffect(() => { loadItems(); }, []);
+      useEffect(() => {
+        if (showModal) document.body.classList.add('modal-open');
+        else document.body.classList.remove('modal-open');
+      }, [showModal]);
 
-        return {
-          ...item,
-          origPrice: typeof item.origPrice === 'number' ? item.origPrice : 0,
-          salePrice: typeof item.salePrice === 'number' ? item.salePrice : 0,
-          profitPerItem: typeof item.profitPerItem === 'number' ? item.profitPerItem : 0,
-          totalProfit: typeof item.totalProfit === 'number' ? item.totalProfit : 0,
-          likes: typeof item.likes === 'number' ? item.likes : 0,
-          quantity: typeof item.quantity === 'number' ? item.quantity : 1,
-          sold: typeof item.sold === 'number' ? item.sold : 0,
-          salesHistory,
-          dateSold: latestSaleDate
-        };
-      });
-
-      setItems(validatedData);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching items:', err);
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
-  // ✅ Edit an item
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setShowModal(true);
-  };
-
-  // ✅ Delete an item
-  const handleDelete = async (item) => {
-    try {
-      const res = await fetch(`${API_URL}/api/items/${encodeURIComponent(item.name)}`, {
-        method: 'DELETE',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Failed to delete item: ${res.status} ${res.statusText} - ${text}`);
-      }
-
-      const data = await res.json();
-      console.log('Deleted:', data);
-
-      setItems(items.filter(i => i.name !== item.name));
-    } catch (err) {
-      console.error('Error deleting item:', err);
-      alert(`Failed to delete item: ${err.message}`);
-    }
-  };
-
-  // ✅ Save or update an item
-  const handleSave = async (item) => {
-    try {
-      const method = editingItem ? 'PUT' : 'POST';
-      const url = editingItem
-        ? `${API_URL}/api/items/${encodeURIComponent(editingItem.name)}`
-        : `${API_URL}/api/items`;
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(item)
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Failed to save item: ${res.status} ${res.statusText} - ${text}`);
-      }
-
-      const savedItem = await res.json();
-
-      if (editingItem) {
-        setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
-      } else {
-        setItems([...items, savedItem]);
-      }
-
-      setShowModal(false);
-      setEditingItem(null);
-    } catch (err) {
-      console.error('Error saving item:', err);
-      alert(`Failed to save item: ${err.message}`);
-    }
-  };
-
-  // Cancel modal
-  const handleCancel = () => {
-    setShowModal(false);
-    setEditingItem(null);
-  };
-
-  // ✅ Load items on first render
-  React.useEffect(() => {
-    loadItems();
-  }, []);
-
-  // ✅ Manage body scroll lock when modal is open
-  React.useEffect(() => {
-    if (showModal) document.body.classList.add('modal-open');
-    else document.body.classList.remove('modal-open');
-  }, [showModal]);
-
-  // ✅ Loading & error handling
-  if (loading) return <div className="loading-message">Loading inventory...</div>;
-  if (error) return <div className="error-message"><h2>Error: {error}</h2></div>;
+      if (loading) return React.createElement('div', { className: 'loading-message' }, 'Loading inventory...');
+      if (error) return React.createElement('div', { className: 'error-message' }, 'Error: ' + error);
 
 // ---------- Helper: getLatestSaleDate ----------
 // Put this above your App component (or inside App before using it)
