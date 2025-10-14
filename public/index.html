@@ -601,8 +601,8 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 
 // App Component
 function App() {
-  // Use your deployed backend URL directly for browser
-  const API_URL = 'https://resalemanager.onrender.com';
+  // ✅ Use environment variable for Netlify, fallback to Render URL
+  const API_URL = import.meta.env.VITE_API_URL || 'https://resalemanager.onrender.com';
 
   const [items, setItems] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -615,7 +615,7 @@ function App() {
 
   const brands = [...new Set(items.map(item => item.brand || 'Unknown'))];
 
-  // Load items from backend
+  // ✅ Load items from backend
   const loadItems = async () => {
     try {
       const res = await fetch(`${API_URL}/api/items`, {
@@ -655,19 +655,18 @@ function App() {
     }
   };
 
-  // Edit an item
+  // ✅ Edit an item
   const handleEdit = (item) => {
     setEditingItem(item);
     setShowModal(true);
   };
 
-  // Delete an item
+  // ✅ Delete an item
   const handleDelete = async (item) => {
     try {
-      const res = await fetch(`${API_URL}/api/items`, {
+      const res = await fetch(`${API_URL}/api/items/${encodeURIComponent(item.name)}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ name: item.name })
+        headers: { 'Accept': 'application/json' }
       });
 
       if (!res.ok) {
@@ -675,7 +674,9 @@ function App() {
         throw new Error(`Failed to delete item: ${res.status} ${res.statusText} - ${text}`);
       }
 
-      await res.json();
+      const data = await res.json();
+      console.log('Deleted:', data);
+
       setItems(items.filter(i => i.name !== item.name));
     } catch (err) {
       console.error('Error deleting item:', err);
@@ -683,11 +684,15 @@ function App() {
     }
   };
 
-  // Save or update an item
+  // ✅ Save or update an item
   const handleSave = async (item) => {
     try {
       const method = editingItem ? 'PUT' : 'POST';
-      const res = await fetch(`${API_URL}/api/items`, {
+      const url = editingItem
+        ? `${API_URL}/api/items/${encodeURIComponent(editingItem.name)}`
+        : `${API_URL}/api/items`;
+
+      const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(item)
@@ -699,6 +704,7 @@ function App() {
       }
 
       const savedItem = await res.json();
+
       if (editingItem) {
         setItems(items.map(i => i.name === editingItem.name ? savedItem : i));
       } else {
@@ -713,21 +719,24 @@ function App() {
     }
   };
 
+  // Cancel modal
   const handleCancel = () => {
     setShowModal(false);
     setEditingItem(null);
   };
 
+  // ✅ Load items on first render
   React.useEffect(() => {
     loadItems();
   }, []);
 
+  // ✅ Manage body scroll lock when modal is open
   React.useEffect(() => {
-  if (showModal) document.body.classList.add('modal-open');
-  else document.body.classList.remove('modal-open');
-}, [showModal]);
+    if (showModal) document.body.classList.add('modal-open');
+    else document.body.classList.remove('modal-open');
+  }, [showModal]);
 
-
+  // ✅ Loading & error handling
   if (loading) return <div className="loading-message">Loading inventory...</div>;
   if (error) return <div className="error-message"><h2>Error: {error}</h2></div>;
 

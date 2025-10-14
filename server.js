@@ -1,25 +1,45 @@
+// server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { forecastTrends } from './forecast.js'; // Import your forecast module
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// ✅ Allowed origins (adjust for your Netlify + local dev)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://friendly-pasca-4754e6.netlify.app', // ✅ your Netlify URL
+];
+
+// ✅ Middleware
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  })
+);
 app.use(express.json());
 
 // ✅ Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // ✅ Define Schema
 const itemSchema = new mongoose.Schema({
@@ -38,15 +58,22 @@ const itemSchema = new mongoose.Schema({
   salesHistory: [
     {
       date: String,
-      totalProfit: Number
-    }
+      totalProfit: Number,
+    },
   ],
-  dateSold: String
+  dateSold: String,
 });
 
 const Item = mongoose.model('Item', itemSchema);
 
-// ✅ GET all items
+// ✅ Routes
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('Resale Manager API is running...');
+});
+
+// GET all items
 app.get('/api/items', async (req, res) => {
   try {
     const items = await Item.find();
@@ -56,7 +83,7 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-// ✅ POST new item
+// POST new item
 app.post('/api/items', async (req, res) => {
   try {
     const newItem = new Item(req.body);
@@ -67,7 +94,7 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
-// ✅ PUT update item
+// PUT update item
 app.put('/api/items/:name', async (req, res) => {
   try {
     const updatedItem = await Item.findOneAndUpdate(
@@ -82,7 +109,7 @@ app.put('/api/items/:name', async (req, res) => {
   }
 });
 
-// ✅ DELETE item
+// DELETE item
 app.delete('/api/items/:name', async (req, res) => {
   try {
     const deleted = await Item.findOneAndDelete({ name: req.params.name });
@@ -93,9 +120,16 @@ app.delete('/api/items/:name', async (req, res) => {
   }
 });
 
-// ✅ Root route
-app.get('/', (req, res) => {
-  res.send('Resale Manager API is running...');
+// ✅ Forecast route (connects to forecast.js)
+app.get('/api/forecast', async (req, res) => {
+  try {
+    const forecast = await forecastTrends(7);
+    res.json(forecast);
+  } catch (error) {
+    console.error('Forecast error:', error);
+    res.status(500).json({ error: 'Failed to generate forecast' });
+  }
 });
 
+// ✅ Start server
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
