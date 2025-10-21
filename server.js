@@ -69,10 +69,9 @@ const itemSchema = new mongoose.Schema({
 const Item = mongoose.model('Item', itemSchema);
 
 // ✅ Routes
-
-// Root route
-app.get('/', (req, res) => {
-  res.send('Resale Manager API is running...');
+// Fallback for React Router or direct refreshes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // GET all items
@@ -138,11 +137,6 @@ const __dirname = path.dirname(__filename);
 
 // Serve frontend files from "dist" (after build)
 app.use(express.static(path.join(__dirname, 'dist')));
-
-// Fallback for React Router or direct refreshes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
 
 // ✅ Start server
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
