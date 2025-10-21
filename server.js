@@ -1,40 +1,39 @@
-// server.js
+// ✅ 1️⃣ Import dependencies
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { forecastTrends } from './forecast.js'; // Import your forecast module
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { forecastTrends } from './forecast.js';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ✅ Allowed origins (adjust for your Netlify + local dev)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ 2️⃣ CORS setup
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://resalemanager.onrender.com', // ✅ your Render web service
+  'https://resalemanager.onrender.com',
 ];
 
-// ✅ Middleware
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+      if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+      else callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   })
 );
 app.use(express.json());
 
-// ✅ Connect to MongoDB
+// ✅ 3️⃣ Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -43,7 +42,7 @@ mongoose
   .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// ✅ Define Schema
+// ✅ 4️⃣ Define Schema & Model
 const itemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: String,
@@ -68,13 +67,7 @@ const itemSchema = new mongoose.Schema({
 
 const Item = mongoose.model('Item', itemSchema);
 
-// ✅ Routes
-// Fallback for React Router or direct refreshes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-// GET all items
+// ✅ 5️⃣ API ROUTES — must be defined *before* static serving
 app.get('/api/items', async (req, res) => {
   try {
     const items = await Item.find();
@@ -84,7 +77,6 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-// POST new item
 app.post('/api/items', async (req, res) => {
   try {
     const newItem = new Item(req.body);
@@ -95,14 +87,11 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
-// PUT update item
 app.put('/api/items/:name', async (req, res) => {
   try {
-    const updatedItem = await Item.findOneAndUpdate(
-      { name: req.params.name },
-      req.body,
-      { new: true }
-    );
+    const updatedItem = await Item.findOneAndUpdate({ name: req.params.name }, req.body, {
+      new: true,
+    });
     if (!updatedItem) return res.status(404).json({ error: 'Item not found' });
     res.json(updatedItem);
   } catch (err) {
@@ -110,7 +99,6 @@ app.put('/api/items/:name', async (req, res) => {
   }
 });
 
-// DELETE item
 app.delete('/api/items/:name', async (req, res) => {
   try {
     const deleted = await Item.findOneAndDelete({ name: req.params.name });
@@ -121,22 +109,13 @@ app.delete('/api/items/:name', async (req, res) => {
   }
 });
 
-// ✅ Forecast route (connects to forecast.js)
-app.get('/api/forecast', async (req, res) => {
-  try {
-    const forecast = await forecastTrends(7);
-    res.json(forecast);
-  } catch (error) {
-    console.error('Forecast error:', error);
-    res.status(500).json({ error: 'Failed to generate forecast' });
-  }
-});
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve frontend files from "dist" (after build)
+// ✅ 6️⃣ Serve frontend *after* API routes
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// ✅ Start server
+// Catch-all fallback (only after API routes)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+// ✅ 7️⃣ Start server
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
