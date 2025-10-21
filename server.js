@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { forecastTrends } from './forecast.js'; // Import your forecast module
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -14,7 +16,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'http://resalemanager.netlify.app', // ✅ your Netlify URL
+  'https://resalemanager.onrender.com', // ✅ your Render web service
 ];
 
 // ✅ Middleware
@@ -129,6 +131,17 @@ app.get('/api/forecast', async (req, res) => {
     console.error('Forecast error:', error);
     res.status(500).json({ error: 'Failed to generate forecast' });
   }
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve frontend files from "dist" (after build)
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Fallback for React Router or direct refreshes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // ✅ Start server
