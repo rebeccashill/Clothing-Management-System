@@ -77,9 +77,19 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
+// POST new item
 app.post('/api/items', async (req, res) => {
   try {
-    const newItem = new Item(req.body);
+    const { origPrice = 0, salePrice = 0, sold = 0 } = req.body;
+    const profitPerItem = Number((salePrice - origPrice).toFixed(2));
+    const totalProfit = Number((profitPerItem * sold).toFixed(2));
+
+    const newItem = new Item({
+      ...req.body,
+      profitPerItem,
+      totalProfit,
+    });
+
     await newItem.save();
     res.json(newItem);
   } catch (err) {
@@ -87,17 +97,26 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
+// PUT update item
 app.put('/api/items/:name', async (req, res) => {
   try {
-    const updatedItem = await Item.findOneAndUpdate({ name: req.params.name }, req.body, {
-      new: true,
-    });
+    const { origPrice = 0, salePrice = 0, sold = 0 } = req.body;
+    const profitPerItem = Number((salePrice - origPrice).toFixed(2));
+    const totalProfit = Number((profitPerItem * sold).toFixed(2));
+
+    const updatedItem = await Item.findOneAndUpdate(
+      { name: req.params.name },
+      { ...req.body, profitPerItem, totalProfit },
+      { new: true }
+    );
+
     if (!updatedItem) return res.status(404).json({ error: 'Item not found' });
     res.json(updatedItem);
   } catch (err) {
     res.status(500).json({ error: 'Failed to update item', details: err.message });
   }
 });
+
 
 app.delete('/api/items/:name', async (req, res) => {
   try {
