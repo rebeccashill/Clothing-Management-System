@@ -62,7 +62,7 @@ const itemSchema = new mongoose.Schema({
       totalProfit: Number,
     },
   ],
-  dateSold: String,
+  dateSold: { type: Date, default: null },
 });
 
 const Item = mongoose.model('Item', itemSchema);
