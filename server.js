@@ -130,6 +130,7 @@ app.delete('/api/items/:name', async (req, res) => {
 
 // ✅ 6️⃣ Serve frontend *after* API routes
 app.use(express.static(path.join(__dirname, 'dist')));
+console.log("✅ Serving static files from /dist");
 
 // Catch-all fallback (only after API routes)
 app.get('*', (req, res) => {
@@ -138,6 +139,4 @@ app.get('*', (req, res) => {
 
 // ✅ 7️⃣ Start server
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
-
-console.log("✅ Serving static files from /dist");
 

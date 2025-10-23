@@ -223,6 +223,7 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
+    const API_URL = 'https://resalemanager.onrender.com';
     // Preserve original fetch to bypass injected.js
     const originalFetch = window.fetch;
 
@@ -598,7 +599,6 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 }
 
   const { useState, useEffect } = React;
-  const API_URL = 'https://resalemanager.onrender.com';
 
 function App() {
   const [items, setItems] = useState([]);
