@@ -138,3 +138,6 @@ app.get('*', (req, res) => {
 
 // ✅ 7️⃣ Start server
 app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
+
+console.log("✅ Serving static files from /dist");
+
