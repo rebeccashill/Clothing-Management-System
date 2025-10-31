@@ -224,15 +224,14 @@
 </head>
 <body>
   <div id="root"></div>
-    <!-- React 18 -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-
-    <!-- Babel for JSX transpiling -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- React 18 production builds from jsDelivr -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.3/babel.min.js"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
   <!--<script type="text/babel">
     const API_URL = 'https://resalemanager.onrender.com';
     const originalFetch = window.fetch;
@@ -823,19 +822,15 @@ window.addEventListener("error", (event) => {
   </script>-->
   <script type="text/babel">
   console.log("✅ Frontend script executing...");
-
-  // Make sure React and ReactDOM are available
   console.log("React:", !!window.React);
   console.log("ReactDOM:", !!window.ReactDOM);
 
-
-  // Simple test render
-  const root = document.getElementById('root');
-  if (root) {
-    root.innerHTML = "<h1 style='color:green'>✅ Raw HTML Rendered</h1>";
-  } else {
-    console.error("❌ #root element not found");
+  function App() {
+    return React.createElement("h1", null, "✅ React Render Successful");
   }
+
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(React.createElement(App));
 </script>
 </body>
 </html>
