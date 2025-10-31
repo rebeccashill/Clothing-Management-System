@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clothing Inventory System</title>
 
-  <!-- React 18 -->
+  <!-- React 18
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
-  <!-- Babel for JSX transpiling -->
+   Babel for JSX transpiling
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script> -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -224,6 +224,14 @@
 </head>
 <body>
   <div id="root"></div>
+    <!-- React 18 -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Babel for JSX transpiling -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script type="text/babel">
     const API_URL = 'https://resalemanager.onrender.com';
     const originalFetch = window.fetch;
@@ -780,33 +788,36 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 }**/
 
 
-function App() {
-  return React.createElement('h1', null, '✅ App rendered successfully');
-}
+console.log("✅ Frontend script running");
+  function App() {
+    return React.createElement('h1', null, '✅ App rendered successfully');
+  }
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(React.createElement(App));
 
-console.log("✅ Frontend script loaded");
+/*console.log("✅ Frontend script loaded");
 window.addEventListener("error", (event) => {
   console.error("⚠️ Caught runtime error:", event.error);
-});
+});*/
 
   console.log('Checking for required libraries...');
   if (!window.React || !window.ReactDOM) {
     console.error('Failed to load React or ReactDOM. Check CDN URLs.');
   } else {
     console.log('Rendering React app...');
-    const root = ReactDOM.createRoot(document.getElementById('root'));
+    //const root = ReactDOM.createRoot(document.getElementById('root'));
 
     // Render App with plain React.createElement
     // If you have an ErrorBoundary function, you can wrap App like this:
     // React.createElement(ErrorBoundary, null, React.createElement(App))
 
-    root.render(
+    /*root.render(
       React.createElement(
         window.ErrorBoundary || React.Fragment, // fallback to Fragment if ErrorBoundary not defined
         null,
         React.createElement(App)
       )
-    );
+    );*/
   }
   </script>
 </body>
