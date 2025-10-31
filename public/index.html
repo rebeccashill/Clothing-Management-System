@@ -232,7 +232,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
-  <script type="text/babel" data-presets="env,react">
+  <!--<script type="text/babel" data-presets="env,react">
     const API_URL = 'https://resalemanager.onrender.com';
     const originalFetch = window.fetch;
 
@@ -835,6 +835,13 @@ console.log("✅ Frontend script running");
   console.log("React:", !!window.React);
   console.log("ReactDOM:", !!window.ReactDOM);
 
-</script>
+</script>-->
+  <script type="text/babel" data-presets="env,react">
+    window.onload = () => {
+      console.log("🌐 DOM loaded");
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<h1>✅ Render Works</h1>);
+    };
+  </script>
 </body>
 </html>
