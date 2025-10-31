@@ -225,8 +225,9 @@
 <body>
   <div id="root"></div>
     <!-- React 18 -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
 
     <!-- Babel for JSX transpiling -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -826,6 +827,7 @@ window.addEventListener("error", (event) => {
   // Make sure React and ReactDOM are available
   console.log("React:", !!window.React);
   console.log("ReactDOM:", !!window.ReactDOM);
+
 
   // Simple test render
   const root = document.getElementById('root');
