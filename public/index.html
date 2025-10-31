@@ -232,7 +232,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script type="text/babel">
+  <!--<script type="text/babel">
     const API_URL = 'https://resalemanager.onrender.com';
     const originalFetch = window.fetch;
 
@@ -819,6 +819,21 @@ window.addEventListener("error", (event) => {
       )
     );*/
   }
-  </script>
+  </script>-->
+  <script type="text/babel">
+  console.log("✅ Frontend script executing...");
+
+  // Make sure React and ReactDOM are available
+  console.log("React:", !!window.React);
+  console.log("ReactDOM:", !!window.ReactDOM);
+
+  // Simple test render
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = "<h1 style='color:green'>✅ Raw HTML Rendered</h1>";
+  } else {
+    console.error("❌ #root element not found");
+  }
+</script>
 </body>
 </html>
