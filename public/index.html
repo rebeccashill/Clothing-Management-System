@@ -236,6 +236,17 @@
     const API_URL = 'https://resalemanager.onrender.com';
     const originalFetch = window.fetch;
 
+    window.addEventListener("error", (event) => {
+    console.error("⚠️ Runtime error caught:", event.error);
+  });
+  window.addEventListener("unhandledrejection", (event) => {
+    console.error("⚠️ Promise rejection:", event.reason);
+  });
+  console.log("✅ Frontend script executing...");
+  console.log("React:", !!window.React);
+  console.log("ReactDOM:", !!window.ReactDOM);
+
+
     class ErrorBoundary extends React.Component {
       state = { hasError: false, error: null };
       static getDerivedStateFromError(error) {
@@ -813,7 +824,7 @@ console.log("✅ Frontend script running");
   console.log("✅ Frontend script executing...");
   console.log("React:", !!window.React);
   console.log("ReactDOM:", !!window.ReactDOM);
-  
+
 </script>
 </body>
 </html>
