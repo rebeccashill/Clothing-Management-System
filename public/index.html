@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clothing Inventory System</title>
+
   <!-- React 18 -->
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
   <!-- Babel for JSX transpiling -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <style>
     body {
@@ -224,10 +226,8 @@
   <div id="root"></div>
   <script type="text/babel">
     const API_URL = 'https://resalemanager.onrender.com';
-    // Preserve original fetch to bypass injected.js
     const originalFetch = window.fetch;
 
-    // ErrorBoundary Component
     class ErrorBoundary extends React.Component {
       state = { hasError: false, error: null };
       static getDerivedStateFromError(error) {
@@ -601,6 +601,7 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
   const { useState, useEffect } = React;
 
 function App() {
+  console.log("✅ App component mounted");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -779,6 +780,11 @@ function App() {
 }
 
 
+
+console.log("✅ Frontend script loaded");
+window.addEventListener("error", (event) => {
+  console.error("⚠️ Caught runtime error:", event.error);
+});
 
   console.log('Checking for required libraries...');
   if (!window.React || !window.ReactDOM) {
