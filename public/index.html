@@ -620,10 +620,19 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
   const { useState, useEffect } = React;
 
 function App() {
+
+  console.log("👟 App() started");
+  const [items, setItems] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    console.log("📡 useEffect triggered – fetching items...");
+  }, []);
   console.log("✅ App component mounted");
-  const [items, setItems] = useState([]);
+  /*const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null);*/
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [platformFilter, setPlatformFilter] = useState('All');
@@ -764,7 +773,7 @@ function App() {
   const totalProfit = filteredItems.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
 
   // ✅ Render
-  return React.createElement(
+  /*return React.createElement(
     'div',
     { className: 'app-container' },
     React.createElement('h1', null, 'Clothing Inventory'),
@@ -795,7 +804,8 @@ function App() {
         onSave: handleSave,
         onCancel: handleCancel
       })
-  );
+  );*/
+  return <h1 style={{textAlign: "center"}}>🧾 React App Mounted</h1>;
 }
 
 
