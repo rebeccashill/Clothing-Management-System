@@ -600,7 +600,7 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 
   const { useState, useEffect } = React;
 
-function App() {
+/**function App() {
   console.log("✅ App component mounted");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -777,9 +777,12 @@ function App() {
         onCancel: handleCancel
       })
   );
+}**/
+
+
+function App() {
+  return React.createElement('h1', null, '✅ App rendered successfully');
 }
-
-
 
 console.log("✅ Frontend script loaded");
 window.addEventListener("error", (event) => {
