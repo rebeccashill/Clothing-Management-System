@@ -836,23 +836,20 @@ console.log("✅ Frontend script running");
   console.log("ReactDOM:", !!window.ReactDOM);
 
 </script>-->
-<script type="text/babel" data-presets="env,react">
-window.onload = () => {
-  console.log("🌐 DOM loaded, bootstrapping full React app…");
+<script type="text/babel" data-presets='["env","react"]'>
+  window.onload = () => {
+    console.log("🌐 DOM loaded, bootstrapping full React app…");
 
-  const API_URL = "https://resalemanager.onrender.com";
+    const API_URL = "https://resalemanager.onrender.com";
 
-  // your full React code here (ErrorBoundary, ProfitChart, ItemList, ItemForm, etc.)
-  // make sure everything is *inside* this onload callback
+    function App() {
+      console.log("👟 App started");
+      return <h1>🧾 Clothing Inventory Loaded</h1>;
+    }
 
-  function App() {
-    console.log("👟 App started");
-    return <h1>🧾 Clothing Inventory Loaded</h1>;
-  }
-
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<App />);
-};
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  };
 </script>
 </body>
 </html>
