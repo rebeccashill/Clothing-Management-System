@@ -156,6 +156,25 @@ window.onload = () => {
             }}
           />
         </div>
+
+        <div>
+            <label>Month Sold</label>
+            <select value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
+                <option value="All">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
       </div>
     );
   }
@@ -256,6 +275,8 @@ window.onload = () => {
     const [brandFilter, setBrandFilter] = useState("All");
     const [sortBy, setSortBy] = useState("name-asc");
     const [search, setSearch] = useState("");
+    const [monthFilter, setMonthFilter] = useState("All");
+
 
     useEffect(() => {
       fetch(API_URL + "/api/items")
@@ -314,12 +335,16 @@ window.onload = () => {
 
     // ✅ Filtering & Sorting Logic
     let filtered = items.filter((i) => {
-      return (
-        (platformFilter === "All" || i.platform === platformFilter) &&
-        (brandFilter === "All" || i.brand === brandFilter) &&
-        (i.name?.toLowerCase().includes(search.toLowerCase()) ||
-          i.type?.toLowerCase().includes(search.toLowerCase()))
-      );
+        const date = i.dateSold ? new Date(i.dateSold) : null;
+        const month = date ? date.getMonth() + 1 : null; // JS months are 0-based
+
+        return (
+            (platformFilter === "All" || i.platform === platformFilter) &&
+            (brandFilter === "All" || i.brand === brandFilter) &&
+            (monthFilter === "All" || month === Number(monthFilter)) &&
+            (i.name?.toLowerCase().includes(search.toLowerCase()) ||
+            i.type?.toLowerCase().includes(search.toLowerCase()))
+        );
     });
 
     filtered.sort((a, b) => {
@@ -347,16 +372,19 @@ window.onload = () => {
 
         {/* Filter + Sort */}
         <FilterSortControls
-          platformFilter={platformFilter}
-          setPlatformFilter={setPlatformFilter}
-          brandFilter={brandFilter}
-          setBrandFilter={setBrandFilter}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          allBrands={allBrands}
-          search={search}
-          setSearch={setSearch}
+        platformFilter={platformFilter}
+        setPlatformFilter={setPlatformFilter}
+        brandFilter={brandFilter}
+        setBrandFilter={setBrandFilter}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        allBrands={allBrands}
+        search={search}
+        setSearch={setSearch}
+        monthFilter={monthFilter}
+        setMonthFilter={setMonthFilter}
         />
+
 
         {/* Charts */}
         <ProfitChart data={filtered} title="Platform" groupBy="platform" />
