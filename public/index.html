@@ -927,19 +927,20 @@ console.log("✅ Frontend script running");
         if (loading) return <div className="loading-message">Loading inventory…</div>;
         if (error) return <div className="error-message">Error: {error}</div>;
 
-        return (
-          <div>
-            <h1>🧾 Clothing Inventory</h1>
-            <p>Total items: {items.length}</p>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {items.map((item) => (
-                <li key={item._id || item.name}>
+      return (
+        <div>
+          <h1>Clothing Inventory</h1>
+          <p>Total items: {items.length}</p>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {items.map((item) => (
+              <li key={item._id || item.name}>
                 {item.name} — {"$" + (item.totalProfit || 0)}
-            </li>
-          ))}
+              </li>
+            ))}
           </ul>
-          </div>
-        );
+        </div>
+      );
+
       }
 
       // ✅ Mount the React app
