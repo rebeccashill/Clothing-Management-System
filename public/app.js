@@ -75,8 +75,11 @@ window.onload = () => {
               <p>
                 Date Sold:{" "}
                 {latestSaleDate
-                  ? new Date(latestSaleDate).toLocaleDateString()
-                  : "Not sold yet"}
+                    ? new Date(
+                        new Date(latestSaleDate).getTime() +
+                        new Date(latestSaleDate).getTimezoneOffset() * 60000
+                    ).toLocaleDateString()
+                    : "Not sold yet"}
               </p>
               <div className="button-group">
                 <button className="edit-button" onClick={() => onEdit(item)}>
@@ -199,7 +202,7 @@ window.onload = () => {
       sold: item?.sold || 0,
       platform: item?.platform || "",
       boosted: item?.boosted || false,
-      dateSold: item?.dateSold ? new Date(item?.dateSold + "T12:00:00Z") : "",
+      dateSold: item?.dateSold || "",
     });
 
     const handleChange = (e) => {
@@ -216,10 +219,26 @@ window.onload = () => {
     };
 
     const handleSubmit = (e) => {
-      e.preventDefault();
-      const profitPerItem = formData.salePrice - formData.origPrice;
-      const totalProfit = profitPerItem * formData.sold;
-      onSave({ ...formData, profitPerItem, totalProfit });
+        e.preventDefault();
+
+        // ✅ Convert dateSold properly before saving
+        let adjustedDateSold = null;
+        if (formData.dateSold) {
+            // Add 12 hours to avoid timezone shifting backwards
+            const localDate = new Date(formData.dateSold);
+            localDate.setHours(12, 0, 0, 0);
+            adjustedDateSold = localDate.toISOString();
+        }
+
+        const profitPerItem = formData.salePrice - formData.origPrice;
+        const totalProfit = profitPerItem * formData.sold;
+
+        onSave({
+            ...formData,
+            dateSold: adjustedDateSold,
+            profitPerItem,
+            totalProfit,
+        });
     };
 
     return (
