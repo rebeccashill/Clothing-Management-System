@@ -75,7 +75,11 @@ window.onload = () => {
               <p>
                 Date Sold:{" "}
                 {latestSaleDate
-                    ? new Date(latestSaleDate + "T00:00:00").toLocaleDateString()
+                    ? new Date(latestSaleDate).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric"
+                    })
                     : "Not sold yet"}
               </p>
               <div className="button-group">
@@ -229,6 +233,7 @@ window.onload = () => {
         Number(day),
         0, 0, 0
         ).toISOString(); // force consistent UTC midnight
+        adjustedDateSold = formData.dateSold;
     }
 
     const profitPerItem = formData.salePrice - formData.origPrice;
