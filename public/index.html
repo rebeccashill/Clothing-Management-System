@@ -892,7 +892,7 @@ console.log("✅ Frontend script running");
   <!-- Your App -->
   <script type="text/babel" data-presets="env,react">
     window.onload = () => {
-      console.log("🌐 DOM loaded, bootstrapping Clothing Inventory app…");
+      console.log("DOM loaded, bootstrapping Clothing Inventory app…");
 
       const API_URL = "https://resalemanager.onrender.com";
 
@@ -900,25 +900,25 @@ console.log("✅ Frontend script running");
       const { useState, useEffect } = React;
 
       function App() {
-        console.log("👟 App started");
+        console.log("App started");
         const [items, setItems] = useState([]);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState(null);
 
         useEffect(() => {
-          console.log("📡 Fetching items from backend…");
+          console.log("Fetching items from backend…");
           fetch(API_URL + "/api/items")
             .then((res) => {
               if (!res.ok) throw new Error("Failed to fetch items");
               return res.json();
             })
             .then((data) => {
-              console.log("✅ Items loaded:", data.length);
+              console.log("Items loaded:", data.length);
               setItems(data);
               setLoading(false);
             })
             .catch((err) => {
-              console.error("❌ Fetch error:", err);
+              console.error("Fetch error:", err);
               setError(err.message);
               setLoading(false);
             });
