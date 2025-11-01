@@ -4,49 +4,57 @@ window.onload = () => {
   const { useState, useEffect } = React;
 
   // ✅ ProfitChart Component
-  function ProfitChart({ data, title, groupBy }) {
-    const canvasRef = React.useRef(null);
-    const grouped = data.reduce((acc, item) => {
-      const key = item[groupBy] || "Other";
-      acc[key] = (acc[key] || 0) + (item.totalProfit || 0);
-      return acc;
-    }, {});
-    const labels = Object.keys(grouped);
-    const profits = Object.values(grouped);
+function ProfitChart({ data, title, groupBy }) {
+  const canvasRef = React.useRef(null);
 
-    React.useEffect(() => {
-      const ctx = canvasRef.current.getContext("2d");
-      const chart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            {
-              label: `Profit by ${title}`,
-              data: profits,
-              backgroundColor: "#007bff40",
-              borderColor: "#007bff",
-              borderWidth: 1.5,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: "Profit ($)" } },
+  // 1️⃣ Group profits by key (brand, platform, etc.)
+  const grouped = data.reduce((acc, item) => {
+    const key = item[groupBy] || "Other";
+    acc[key] = (acc[key] || 0) + (item.totalProfit || 0);
+    return acc;
+  }, {});
+
+  // 2️⃣ Sort by profit (descending)
+  const sortedEntries = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+  const labels = sortedEntries.map(([key]) => key);
+  const profits = sortedEntries.map(([, value]) => value);
+
+  // 3️⃣ Render chart
+  React.useEffect(() => {
+    const ctx = canvasRef.current.getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: `Profit by ${title}`,
+            data: profits,
+            backgroundColor: "#007bff40",
+            borderColor: "#007bff",
+            borderWidth: 1.5,
           },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: "Profit ($)" } },
+          x: { title: { display: true, text: title } },
         },
-      });
-      return () => chart.destroy();
-    }, [data]);
+      },
+    });
+    return () => chart.destroy();
+  }, [data]);
 
-    return (
-      <div className="chart-container">
-        <h3>{`Profit by ${title}`}</h3>
-        <canvas ref={canvasRef}></canvas>
-      </div>
-    );
-  }
+  return (
+    <div className="chart-container">
+      <h3>{`Profit by ${title}`}</h3>
+      <canvas ref={canvasRef}></canvas>
+    </div>
+  );
+}
+
 
   // ✅ ItemList
   function ItemList({ items, onEdit, onDelete }) {
