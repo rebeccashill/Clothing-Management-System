@@ -422,11 +422,21 @@ function ProfitChart({ data, title, groupBy }) {
     return (
       <div className="app-container">
         <h1>🧾 Clothing Inventory</h1>
-        <div className="total-profit">
-        <div><strong>Total Profit:</strong> ${totalProfit.toFixed(2)}</div>
-        <div><strong>Total Revenue:</strong> ${totalRevenue.toFixed(2)}</div>
-        <div style={{ marginTop: "4px", color: "#2e7d32" }}>
-            <strong>Profit Margin:</strong> {profitMargin.toFixed(1)}%
+
+        <div className="summary-grid">
+        <div className="summary-card profit">
+            <h3>Total Profit</h3>
+            <p>${totalProfit.toFixed(2)}</p>
+        </div>
+
+        <div className="summary-card revenue">
+            <h3>Total Revenue</h3>
+            <p>${totalRevenue.toFixed(2)}</p>
+        </div>
+
+        <div className="summary-card margin">
+            <h3>Profit Margin</h3>
+            <p>{profitMargin.toFixed(1)}%</p>
         </div>
         </div>
 
