@@ -63,6 +63,7 @@ const itemSchema = new mongoose.Schema({
     },
   ],
   dateSold: { type: String, default: null },
+  nwt: { type: Boolean, default: false },
 });
 
 const Item = mongoose.model('Item', itemSchema);

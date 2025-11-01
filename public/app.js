@@ -75,6 +75,7 @@ function ProfitChart({ data, title, groupBy }) {
               <h4>{item.brand || "Unknown"}</h4>
               <p>Type: {item.type}</p>
               <p>Platform: {item.platform}</p>
+              <p>Condition: {item.nwt ? "🆕 New With Tags" : "Preowned"}</p>
               <p>Likes: {item.likes}</p>
               <p>Original Price: ${item.origPrice?.toFixed(2)}</p>
               <p>Sale Price: ${item.salePrice?.toFixed(2)}</p>
@@ -218,6 +219,7 @@ function ProfitChart({ data, title, groupBy }) {
       platform: item?.platform || "",
       boosted: item?.boosted || false,
       dateSold: item?.dateSold || "",
+      nwt: item?.nwt || false,
     });
 
     const handleChange = (e) => {
@@ -295,6 +297,18 @@ function ProfitChart({ data, title, groupBy }) {
                 />
               </React.Fragment>
             ))}
+
+            <label className="checkbox-label">
+                <input
+                    type="checkbox"
+                    name="nwt"
+                    checked={formData.nwt}
+                    onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, nwt: e.target.checked }))
+                    }
+                />
+                New With Tags (NWT)
+            </label>
 
             <div className="modal-buttons">
               <button type="submit" className="save-button">
