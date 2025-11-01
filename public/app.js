@@ -199,7 +199,7 @@ window.onload = () => {
       sold: item?.sold || 0,
       platform: item?.platform || "",
       boosted: item?.boosted || false,
-      dateSold: item?.dateSold || "",
+      dateSold: item?.dateSold ? new Date(item?.dateSold + "T12:00:00Z") : "",
     });
 
     const handleChange = (e) => {
