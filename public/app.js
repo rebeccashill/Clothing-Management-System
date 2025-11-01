@@ -372,8 +372,12 @@ window.onload = () => {
 
     // ✅ Filtering & Sorting Logic
     let filtered = items.filter((i) => {
-        const date = i.dateSold ? new Date(i.dateSold) : null;
-        const month = date ? date.getMonth() + 1 : null; // JS months are 0-based
+        let month = null;
+        if (i.dateSold && /^\d{4}-\d{2}-\d{2}$/.test(i.dateSold)) {
+        const [, m] = i.dateSold.split("-");
+        month = Number(m);
+        }
+
 
         return (
             (platformFilter === "All" || i.platform === platformFilter) &&
@@ -394,10 +398,11 @@ window.onload = () => {
         valA = a.totalProfit;
         valB = b.totalProfit;
       } else if (field === "dateSold") {
-        valA = a.dateSold ? new Date(a.dateSold) : 0;
-        valB = b.dateSold ? new Date(b.dateSold) : 0;
-      }
-      return dir === "asc" ? valA - valB : valB - valA;
+        valA = a.dateSold || "";
+        valB = b.dateSold || "";
+        if (dir === "asc") return valA.localeCompare(valB);
+        return valB.localeCompare(valA);
+        }
     });
 
     const totalProfit = filtered.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
