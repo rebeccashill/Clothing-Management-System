@@ -1,18 +1,18 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clothing Inventory System</title>
 
-  <!-- React 18
+   React 18
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
    Babel for JSX transpiling
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -835,7 +835,7 @@ console.log("✅ Frontend script running");
   console.log("React:", !!window.React);
   console.log("ReactDOM:", !!window.ReactDOM);
 
-</script>-->
+</script>
 <script type="text/babel" data-presets="env,react">
   window.onload = () => {
     console.log("🌐 DOM loaded, bootstrapping full React app…");
@@ -852,5 +852,100 @@ console.log("✅ Frontend script running");
   };
 </script>
 
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clothing Inventory System</title>
+
+  <!-- React 18 (CDN, reliable on Render) -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel (for JSX support in-browser) -->
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.3/babel.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    h1 { margin-top: 1rem; }
+    .loading-message { margin-top: 2rem; font-size: 1.2rem; }
+    .error-message { color: red; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Your App -->
+  <script type="text/babel" data-presets="env,react">
+    window.onload = () => {
+      console.log("🌐 DOM loaded, bootstrapping Clothing Inventory app…");
+
+      const API_URL = "https://resalemanager.onrender.com";
+
+      // ✅ Example minimal version first (you can re-add full components later)
+      const { useState, useEffect } = React;
+
+      function App() {
+        console.log("👟 App started");
+        const [items, setItems] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+          console.log("📡 Fetching items from backend…");
+          fetch(API_URL + "/api/items")
+            .then((res) => {
+              if (!res.ok) throw new Error("Failed to fetch items");
+              return res.json();
+            })
+            .then((data) => {
+              console.log("✅ Items loaded:", data.length);
+              setItems(data);
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.error("❌ Fetch error:", err);
+              setError(err.message);
+              setLoading(false);
+            });
+        }, []);
+
+        if (loading) return <div className="loading-message">Loading inventory…</div>;
+        if (error) return <div className="error-message">Error: {error}</div>;
+
+        return (
+          <div>
+            <h1>🧾 Clothing Inventory</h1>
+            <p>Total items: {items.length}</p>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {items.map((item) => (
+                <li key={item._id || item.name}>
+                  {item.name} — ${item.totalProfit || 0}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      // ✅ Mount the React app
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    };
+  </script>
 </body>
 </html>
