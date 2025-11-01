@@ -356,7 +356,7 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
 
   const { useState, useEffect } = React;
 
-  function App() {
+  /*function App() {
     console.log("App started");
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -397,8 +397,191 @@ function FilterSortControls({ platformFilter, setPlatformFilter, brandFilter, se
         </ul>
       </div>
     );
-  }
+  }*/
 
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<App />);
+function App() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [platformFilter, setPlatformFilter] = useState('All');
+  const [brandFilter, setBrandFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('name-asc');
+
+  // Helper to get latest sale date
+  const getLatestSaleDate = (item) => {
+    if (!item) return null;
+    const sales = item.salesHistory || [];
+    const last = sales[sales.length - 1];
+    const raw = last?.date ?? last?.dateSold ?? item.dateSold ?? null;
+    return raw ? new Date(raw) : null;
+  };
+
+  // Load items
+  const loadItems = async () => {
+    try {
+      const res = await fetch(API_URL + '/api/items', { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+      const data = await res.json();
+      setItems(data.map(item => ({
+        ...item,
+        totalProfit: Number(item.totalProfit) || 0,
+        dateSold: getLatestSaleDate(item) || item.dateSold || null
+      })));
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  // Save or update item
+  const handleSave = async (item) => {
+    try {
+      const method = editingItem ? 'PUT' : 'POST';
+      const id = editingItem?._id || editingItem?.name;
+      const url = editingItem ? `${API_URL}/api/items/${encodeURIComponent(id)}` : `${API_URL}/api/items`;
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(item)
+      });
+      if (!res.ok) throw new Error(`Failed to save: ${res.status} ${res.statusText}`);
+      const saved = await res.json();
+
+      if (editingItem) {
+        setItems(items.map(i => (i._id === editingItem._id ? saved : i)));
+      } else {
+        setItems([...items, saved]);
+      }
+
+      setEditingItem(null);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  // Delete item
+  const handleDelete = async (item) => {
+    try {
+      const id = item._id || item.name;
+      const res = await fetch(`${API_URL}/api/items/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { Accept: 'application/json' }
+      });
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status} ${res.statusText}`);
+      setItems(items.filter(i => (i._id || i.name) !== id));
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setShowModal(true);
+  };
+
+  const handleCancel = () => {
+    setEditingItem(null);
+    setShowModal(false);
+  };
+
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle('modal-open', showModal);
+  }, [showModal]);
+
+  if (loading)
+    return React.createElement('div', { className: 'loading-message' }, 'Loading inventory...');
+  if (error)
+    return React.createElement('div', { className: 'error-message' }, 'Error: ' + error);
+
+  // Filter & sort items
+  const filteredItems = items
+    .filter(
+      (item) =>
+        (platformFilter === 'All' || item.platform === platformFilter) &&
+        (brandFilter === 'All' || item.brand === brandFilter)
+    )
+    .sort((a, b) => {
+      const [field, dir] = sortBy.split('-');
+      let valA, valB;
+      if (field === 'name') {
+        valA = a.name?.toLowerCase();
+        valB = b.name?.toLowerCase();
+      } else if (field === 'profit') {
+        valA = a.totalProfit;
+        valB = b.totalProfit;
+      } else if (field === 'dateSold') {
+        valA = a.dateSold ? new Date(a.dateSold).getTime() : (dir === 'asc' ? Infinity : -Infinity);
+        valB = b.dateSold ? new Date(b.dateSold).getTime() : (dir === 'asc' ? Infinity : -Infinity);
+      } else {
+        valA = a[field];
+        valB = b[field];
+      }
+      return dir === 'asc'
+        ? valA < valB
+          ? -1
+          : valA > valB
+          ? 1
+          : 0
+        : valA > valB
+        ? -1
+        : valA < valB
+        ? 1
+        : 0;
+    });
+
+  const totalProfit = filteredItems.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
+
+  // ✅ Render
+  return React.createElement(
+    'div',
+    { className: 'app-container' },
+    React.createElement('h1', null, 'Clothing Inventory'),
+    React.createElement('div', null, 'Total Profit: $' + totalProfit.toFixed(2)),
+
+    React.createElement('button', { onClick: () => setShowModal(true) }, 'Add New Item'),
+
+    React.createElement(
+      'ul',
+      null,
+      filteredItems.map((item) =>
+        React.createElement(
+          'li',
+          { key: item._id || item.name },
+          `${item.name} - $${item.totalProfit}`,
+          ' ',
+          React.createElement('button', { onClick: () => handleEdit(item) }, 'Edit'),
+          ' ',
+          React.createElement('button', { onClick: () => handleDelete(item) }, 'Delete')
+        )
+      )
+    ),
+
+    // ✅ Correct: show full ItemForm when modal is active
+    showModal &&
+      React.createElement(ItemForm, {
+        item: editingItem,
+        onSave: handleSave,
+        onCancel: handleCancel
+      })
+  );
+}
+
+  /*const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);*/
+
+    root.render(
+      React.createElement(React.createElement(App)
+      )
+    );
 };
