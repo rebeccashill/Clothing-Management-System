@@ -199,7 +199,7 @@ window.onload = () => {
       sold: item?.sold || 0,
       platform: item?.platform || "",
       boosted: item?.boosted || false,
-      dateSold: { type: String, default: null },
+      dateSold: item?.dateSold || "",
     });
 
     const handleChange = (e) => {
