@@ -417,14 +417,16 @@ function ProfitChart({ data, title, groupBy }) {
 
     const totalProfit = filtered.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
     const totalRevenue = filtered.reduce((sum, i) => sum + (i.salePrice * i.sold || 0), 0);
+    const profitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
     return (
       <div className="app-container">
         <h1>🧾 Clothing Inventory</h1>
         <div className="total-profit">
         <div><strong>Total Profit:</strong> ${totalProfit.toFixed(2)}</div>
-        <div style={{ marginTop: "4px", color: "#444" }}>
-            <strong>Total Revenue:</strong> ${totalRevenue.toFixed(2)}
+        <div><strong>Total Revenue:</strong> ${totalRevenue.toFixed(2)}</div>
+        <div style={{ marginTop: "4px", color: "#2e7d32" }}>
+            <strong>Profit Margin:</strong> {profitMargin.toFixed(1)}%
         </div>
         </div>
 

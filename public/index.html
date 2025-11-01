@@ -926,17 +926,23 @@ console.log("✅ Frontend script running");
     .total-profit {
       background-color: #e8f0fe;
       padding: 1rem;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       text-align: center;
       font-size: 1.1rem;
       font-weight: 500;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       line-height: 1.6;
-    }
-    .total-profit strong {
-      color: #222;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
+    .total-profit strong {
+      color: #111;
+    }
+
+    .total-profit div:last-child {
+      color: #2e7d32;
+      font-weight: 600;
+    }
 
     button {
       cursor: pointer;
