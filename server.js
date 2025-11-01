@@ -97,15 +97,15 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
-// PUT update item
-app.put('/api/items/:name', async (req, res) => {
+// PUT update item by ID
+app.put('/api/items/:id', async (req, res) => {
   try {
     const { origPrice = 0, salePrice = 0, sold = 0 } = req.body;
     const profitPerItem = Number((salePrice - origPrice).toFixed(2));
     const totalProfit = Number((profitPerItem * sold).toFixed(2));
 
-    const updatedItem = await Item.findOneAndUpdate(
-      { name: req.params.name },
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
       { ...req.body, profitPerItem, totalProfit },
       { new: true }
     );
@@ -117,16 +117,17 @@ app.put('/api/items/:name', async (req, res) => {
   }
 });
 
-
-app.delete('/api/items/:name', async (req, res) => {
+// DELETE item by ID
+app.delete('/api/items/:id', async (req, res) => {
   try {
-    const deleted = await Item.findOneAndDelete({ name: req.params.name });
+    const deleted = await Item.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ error: 'Item not found' });
     res.json({ success: true, deletedItem: deleted.name });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete item', details: err.message });
   }
 });
+
 
 // ✅ 6️⃣ Serve frontend *after* API routes
 app.use(express.static(path.join(__dirname, 'dist')));
