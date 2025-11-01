@@ -1,12 +1,11 @@
 window.onload = () => {
-  console.log("✅ Clothing Inventory App Loading...");
+  console.log("✅ Clothing Inventory App Booting...");
   const API_URL = "https://resalemanager.onrender.com";
   const { useState, useEffect } = React;
 
   // ✅ ProfitChart Component
   function ProfitChart({ data, title, groupBy }) {
     const canvasRef = React.useRef(null);
-
     const grouped = data.reduce((acc, item) => {
       const key = item[groupBy] || "Other";
       acc[key] = (acc[key] || 0) + (item.totalProfit || 0);
@@ -51,6 +50,9 @@ window.onload = () => {
 
   // ✅ ItemList
   function ItemList({ items, onEdit, onDelete }) {
+    if (items.length === 0)
+      return <p style={{ textAlign: "center", color: "#777" }}>No items found.</p>;
+
     return (
       <div className="item-grid">
         {items.map((item) => {
@@ -91,7 +93,74 @@ window.onload = () => {
     );
   }
 
-  // ✅ ItemForm Modal
+  // ✅ Filter & Sort Controls
+  function FilterSortControls({
+    platformFilter,
+    setPlatformFilter,
+    brandFilter,
+    setBrandFilter,
+    sortBy,
+    setSortBy,
+    allBrands,
+    search,
+    setSearch,
+  }) {
+    return (
+      <div className="filter-sort-controls">
+        <div>
+          <label>Platform</label>
+          <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)}>
+            <option value="All">All</option>
+            <option value="Depop">Depop</option>
+            <option value="Poshmark">Poshmark</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Brand</label>
+          <select value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)}>
+            <option value="All">All</option>
+            {allBrands.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Sort By</label>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="profit-desc">Profit (High → Low)</option>
+            <option value="profit-asc">Profit (Low → High)</option>
+            <option value="dateSold-desc">Date Sold (New → Old)</option>
+            <option value="dateSold-asc">Date Sold (Old → New)</option>
+          </select>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <label>Search</label>
+          <input
+            type="text"
+            placeholder="Search by name or type..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ ItemForm (modal)
   function ItemForm({ item, onSave, onCancel }) {
     const [formData, setFormData] = useState({
       name: item?.name || "",
@@ -124,11 +193,7 @@ window.onload = () => {
       e.preventDefault();
       const profitPerItem = formData.salePrice - formData.origPrice;
       const totalProfit = profitPerItem * formData.sold;
-      onSave({
-        ...formData,
-        profitPerItem,
-        totalProfit,
-      });
+      onSave({ ...formData, profitPerItem, totalProfit });
     };
 
     return (
@@ -136,31 +201,34 @@ window.onload = () => {
         <div className="modal-content">
           <h2>{item ? "Edit Item" : "Add New Item"}</h2>
           <form onSubmit={handleSubmit}>
-            <label>Name</label>
-            <input name="name" value={formData.name} onChange={handleChange} required />
-            <label>Type</label>
-            <input name="type" value={formData.type} onChange={handleChange} />
-            <label>Brand</label>
-            <input name="brand" value={formData.brand} onChange={handleChange} />
-            <label>Platform</label>
-            <select name="platform" value={formData.platform} onChange={handleChange}>
-              <option value="">Select</option>
-              <option value="Depop">Depop</option>
-              <option value="Poshmark">Poshmark</option>
-              <option value="Other">Other</option>
-            </select>
-            <label>Likes</label>
-            <input type="number" name="likes" value={formData.likes} onChange={handleChange} />
-            <label>Original Price</label>
-            <input type="number" name="origPrice" step="0.01" value={formData.origPrice} onChange={handleChange} />
-            <label>Sale Price</label>
-            <input type="number" name="salePrice" step="0.01" value={formData.salePrice} onChange={handleChange} />
-            <label>Quantity</label>
-            <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
-            <label>Sold</label>
-            <input type="number" name="sold" value={formData.sold} onChange={handleChange} />
-            <label>Date Sold</label>
-            <input type="date" name="dateSold" value={formData.dateSold} onChange={handleChange} />
+            {[
+              ["name", "Name"],
+              ["type", "Type"],
+              ["brand", "Brand"],
+              ["platform", "Platform"],
+              ["likes", "Likes"],
+              ["origPrice", "Original Price"],
+              ["salePrice", "Sale Price"],
+              ["quantity", "Quantity"],
+              ["sold", "Sold"],
+              ["dateSold", "Date Sold"],
+            ].map(([key, label]) => (
+              <React.Fragment key={key}>
+                <label>{label}</label>
+                <input
+                  name={key}
+                  value={formData[key]}
+                  onChange={handleChange}
+                  type={
+                    ["likes", "origPrice", "salePrice", "quantity", "sold"].includes(key)
+                      ? "number"
+                      : key === "dateSold"
+                      ? "date"
+                      : "text"
+                  }
+                />
+              </React.Fragment>
+            ))}
 
             <div className="modal-buttons">
               <button type="submit" className="save-button">
@@ -183,6 +251,11 @@ window.onload = () => {
     const [error, setError] = useState(null);
     const [editingItem, setEditingItem] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
+    const [platformFilter, setPlatformFilter] = useState("All");
+    const [brandFilter, setBrandFilter] = useState("All");
+    const [sortBy, setSortBy] = useState("name-asc");
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
       fetch(API_URL + "/api/items")
@@ -216,11 +289,11 @@ window.onload = () => {
 
       if (res.ok) {
         const saved = await res.json();
-        if (editingItem) {
-          setItems(items.map((i) => (i._id === editingItem._id ? saved : i)));
-        } else {
-          setItems([...items, saved]);
-        }
+        setItems((prev) =>
+          editingItem
+            ? prev.map((i) => (i._id === editingItem._id ? saved : i))
+            : [...prev, saved]
+        );
       }
       setShowModal(false);
       setEditingItem(null);
@@ -234,25 +307,68 @@ window.onload = () => {
       if (res.ok) setItems(items.filter((i) => i._id !== item._id));
     };
 
-    const totalProfit = items.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
-
     if (loading) return <div className="loading-message">Loading inventory...</div>;
     if (error) return <div className="error-message">Error: {error}</div>;
+
+    const allBrands = Array.from(new Set(items.map((i) => i.brand).filter(Boolean)));
+
+    // ✅ Filtering & Sorting Logic
+    let filtered = items.filter((i) => {
+      return (
+        (platformFilter === "All" || i.platform === platformFilter) &&
+        (brandFilter === "All" || i.brand === brandFilter) &&
+        (i.name?.toLowerCase().includes(search.toLowerCase()) ||
+          i.type?.toLowerCase().includes(search.toLowerCase()))
+      );
+    });
+
+    filtered.sort((a, b) => {
+      const [field, dir] = sortBy.split("-");
+      let valA, valB;
+      if (field === "name") {
+        valA = a.name?.toLowerCase();
+        valB = b.name?.toLowerCase();
+      } else if (field === "profit") {
+        valA = a.totalProfit;
+        valB = b.totalProfit;
+      } else if (field === "dateSold") {
+        valA = a.dateSold ? new Date(a.dateSold) : 0;
+        valB = b.dateSold ? new Date(b.dateSold) : 0;
+      }
+      return dir === "asc" ? valA - valB : valB - valA;
+    });
+
+    const totalProfit = filtered.reduce((sum, i) => sum + (i.totalProfit || 0), 0);
 
     return (
       <div className="app-container">
         <h1>🧾 Clothing Inventory</h1>
         <div className="total-profit">Total Profit: ${totalProfit.toFixed(2)}</div>
 
-        <ProfitChart data={items} title="Platform" groupBy="platform" />
-        <ProfitChart data={items} title="Brand" groupBy="brand" />
+        {/* Filter + Sort */}
+        <FilterSortControls
+          platformFilter={platformFilter}
+          setPlatformFilter={setPlatformFilter}
+          brandFilter={brandFilter}
+          setBrandFilter={setBrandFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          allBrands={allBrands}
+          search={search}
+          setSearch={setSearch}
+        />
 
+        {/* Charts */}
+        <ProfitChart data={filtered} title="Platform" groupBy="platform" />
+        <ProfitChart data={filtered} title="Brand" groupBy="brand" />
+
+        {/* Items */}
         <button className="add-button" onClick={() => setShowModal(true)}>
           + Add Item
         </button>
 
         <ItemList
-          items={items}
+          items={filtered}
           onEdit={(item) => {
             setEditingItem(item);
             setShowModal(true);
