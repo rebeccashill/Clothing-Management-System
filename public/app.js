@@ -201,6 +201,20 @@ function ProfitChart({ data, title, groupBy }) {
             <option value="12">December</option>
         </select>
         </div>
+
+        <div>
+        <label htmlFor="nwtFilter">Condition</label>
+        <select
+            id="nwtFilter"
+            name="nwtFilter"
+            value={nwtFilter}
+            onChange={(e) => setNwtFilter(e.target.value)}
+        >
+            <option value="All">All Items</option>
+            <option value="NWT">New With Tags</option>
+            <option value="Preowned">Preowned</option>
+        </select>
+        </div>
       </div>
     );
   }
@@ -337,6 +351,7 @@ function ProfitChart({ data, title, groupBy }) {
     const [sortBy, setSortBy] = useState("name-asc");
     const [search, setSearch] = useState("");
     const [monthFilter, setMonthFilter] = useState("All");
+    const [nwtFilter, setNwtFilter] = useState("All");
 
 
     useEffect(() => {
@@ -407,6 +422,8 @@ function ProfitChart({ data, title, groupBy }) {
             (platformFilter === "All" || i.platform === platformFilter) &&
             (brandFilter === "All" || i.brand === brandFilter) &&
             (monthFilter === "All" || month === Number(monthFilter)) &&
+            (nwtFilter === "All" || (nwtFilter === "NWT" && i.nwt) ||
+            (nwtFilter === "Preowned" && !i.nwt)) &&
             (i.name?.toLowerCase().includes(search.toLowerCase()) ||
             i.type?.toLowerCase().includes(search.toLowerCase()))
         );
@@ -467,6 +484,8 @@ function ProfitChart({ data, title, groupBy }) {
         setSearch={setSearch}
         monthFilter={monthFilter}
         setMonthFilter={setMonthFilter}
+        nwtFilter={nwtFilter}            // ✅ add this
+        setNwtFilter={setNwtFilter}
         />
 
 
