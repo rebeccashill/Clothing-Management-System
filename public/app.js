@@ -75,7 +75,7 @@ function ProfitChart({ data, title, groupBy }) {
               <h4>{item.brand || "Unknown"}</h4>
               <p>Type: {item.type}</p>
               <p>Platform: {item.platform}</p>
-              <p>Condition: {item.nwt ? "🆕 New With Tags" : "Preowned"}</p>
+              <p>Condition: {item.nwt ? "New With Tags" : "Preowned"}</p>
               <p>Likes: {item.likes}</p>
               <p>Original Price: ${item.origPrice?.toFixed(2)}</p>
               <p>Sale Price: ${item.salePrice?.toFixed(2)}</p>
