@@ -577,11 +577,6 @@ function App() {
   );
 }
 
-  /*const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<App />);*/
-
-    root.render(
-      React.createElement(React.createElement(App)
-      )
-    );
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);
 };
