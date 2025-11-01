@@ -75,10 +75,7 @@ window.onload = () => {
               <p>
                 Date Sold:{" "}
                 {latestSaleDate
-                    ? new Date(
-                        new Date(latestSaleDate).getTime() +
-                        new Date(latestSaleDate).getTimezoneOffset() * 60000
-                    ).toLocaleDateString()
+                    ? new Date(latestSaleDate + "T00:00:00").toLocaleDateString()
                     : "Not sold yet"}
               </p>
               <div className="button-group">
@@ -202,7 +199,7 @@ window.onload = () => {
       sold: item?.sold || 0,
       platform: item?.platform || "",
       boosted: item?.boosted || false,
-      dateSold: item?.dateSold || "",
+      dateSold: { type: String, default: null },
     });
 
     const handleChange = (e) => {
@@ -219,27 +216,32 @@ window.onload = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        // ✅ Convert dateSold properly before saving
-        let adjustedDateSold = null;
-        if (formData.dateSold) {
-            // Add 12 hours to avoid timezone shifting backwards
-            const localDate = new Date(formData.dateSold);
-            localDate.setHours(12, 0, 0, 0);
-            adjustedDateSold = localDate.toISOString();
-        }
+    // ✅ Normalize dateSold safely (no timezone conversion)
+    let adjustedDateSold = null;
+    if (formData.dateSold) {
+        // Keep only the local YYYY-MM-DD string
+        const [year, month, day] = formData.dateSold.split("-");
+        adjustedDateSold = new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        0, 0, 0
+        ).toISOString(); // force consistent UTC midnight
+    }
 
-        const profitPerItem = formData.salePrice - formData.origPrice;
-        const totalProfit = profitPerItem * formData.sold;
+    const profitPerItem = formData.salePrice - formData.origPrice;
+    const totalProfit = profitPerItem * formData.sold;
 
-        onSave({
-            ...formData,
-            dateSold: adjustedDateSold,
-            profitPerItem,
-            totalProfit,
-        });
+    onSave({
+        ...formData,
+        dateSold: adjustedDateSold,
+        profitPerItem,
+        totalProfit,
+    });
     };
+
 
     return (
       <div className="modal">
