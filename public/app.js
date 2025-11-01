@@ -75,11 +75,15 @@ window.onload = () => {
               <p>
                 Date Sold:{" "}
                 {latestSaleDate
-                    ? new Date(latestSaleDate).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric"
-                    })
+                    ? (() => {
+                        const [y, m, d] = latestSaleDate.split("-");
+                        if (!y || !m || !d) return "Invalid date";
+                        const months = [
+                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                        ];
+                        return `${months[Number(m) - 1]} ${Number(d)}, ${y}`;
+                    })()
                     : "Not sold yet"}
               </p>
               <div className="button-group">
