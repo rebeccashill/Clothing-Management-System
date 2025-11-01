@@ -122,7 +122,9 @@ function ProfitChart({ data, title, groupBy }) {
     search,
     setSearch,
     monthFilter,
-    setMonthFilter
+    setMonthFilter,
+    nwtFilter,
+    setNwtFilter
   }) {
     return (
       <div className="filter-sort-controls">
@@ -422,8 +424,9 @@ function ProfitChart({ data, title, groupBy }) {
             (platformFilter === "All" || i.platform === platformFilter) &&
             (brandFilter === "All" || i.brand === brandFilter) &&
             (monthFilter === "All" || month === Number(monthFilter)) &&
-            (nwtFilter === "All" || (nwtFilter === "NWT" && i.nwt) ||
-            (nwtFilter === "Preowned" && !i.nwt)) &&
+            (nwtFilter === "All" ||
+              (nwtFilter === "NWT" && i.nwt) ||
+              (nwtFilter === "Preowned" && !i.nwt)) &&
             (i.name?.toLowerCase().includes(search.toLowerCase()) ||
             i.type?.toLowerCase().includes(search.toLowerCase()))
         );
