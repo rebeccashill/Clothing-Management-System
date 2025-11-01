@@ -119,12 +119,14 @@ window.onload = () => {
       <div className="filter-sort-controls">
         <div>
           <label>Platform</label>
-          <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)}>
+            <select value={platformFilter} onChange={(e) => setPlatformFilter(e.target.value)}>
             <option value="All">All</option>
             <option value="Depop">Depop</option>
             <option value="Poshmark">Poshmark</option>
+            <option value="Vinted">Vinted</option>
+            <option value="eBay">eBay</option>
             <option value="Other">Other</option>
-          </select>
+            </select>
         </div>
 
         <div>
